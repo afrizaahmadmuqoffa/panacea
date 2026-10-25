@@ -19,3 +19,5 @@ references/
 PRD.md
 DESIGN.md
 
+.vercel
+.env*
