@@ -1,0 +1,318 @@
+/* App-only additions on top of the generated reference CSS.
+   Keep this file small: it only covers elements the reference drew with
+   emoji or that the app needs (Lucide icons, marketing copy variants). */
+
+.panacea-site .icon-14,
+:is(.panacea-landing, .panacea-feed) .icon-14 {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+/* Card footer carries the date now, so it owns the divider the old meta row had. */
+.panacea-feed .feed-card .card-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed #e8e2d5;
+}
+
+.panacea-feed .card-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--bark-500);
+  font-size: 10px;
+}
+
+/* Lucide icons render as block (Tailwind preflight), so inline text + icon needs
+   a flex container, and the round icon buttons need explicit centering. */
+:is(.panacea-landing, .panacea-feed) .cta-speech {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+:is(.panacea-landing, .panacea-feed) .cta-speech i {
+  display: inline-flex;
+}
+
+:is(.panacea-landing, .panacea-feed) .cta-speech i svg,
+:is(.panacea-landing, .panacea-feed) .footer-motto span svg,
+.panacea-feed .read-result span svg,
+.panacea-feed .back-link span svg,
+.panacea-feed .source-link span svg {
+  display: block;
+}
+
+.back-to-top {
+  display: grid;
+  place-items: center;
+}
+
+/* The reference relies on body{overflow-x:hidden}. Without it the two decorative
+   .ambient circles (right:-130px / left:-140px) widen the page and it scrolls sideways. */
+.panacea-feed {
+  position: relative;
+  overflow-x: clip;
+}
+
+/* .feed-card::after is the glow circle. As a positioned pseudo it painted over the
+   card content, hiding part of the "Baca hasil" button. Keep it behind everything. */
+.panacea-feed .feed-grid .feed-card::after {
+  z-index: 0;
+}
+
+.panacea-feed .feed-grid .feed-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Detail page is a single column now that the aside is gone. */
+.panacea-feed .detail-view .detail-layout {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+/* Mascot sizing: hero +50%, final CTA -20%. Specificity 0,4,0 so the generated
+   chunk order cannot override these. The generated <=560px rules are beaten too,
+   so mobile values are restated below. */
+.panacea-landing .hero-art .mascot-placeholder.mascot-hero {
+  width: 63%;
+  height: 102%;
+  left: 18.5%;
+  top: -4%;
+}
+
+.panacea-landing .final-cta .mascot-placeholder.mascot-cta {
+  width: 58%;
+  height: 76%;
+  left: 21%;
+  top: 12%;
+}
+
+@media (max-width: 560px) {
+  .panacea-landing .hero-art .mascot-placeholder.mascot-hero {
+    width: 67%;
+    height: 100%;
+    left: 16.5%;
+    top: 2%;
+  }
+
+  .panacea-landing .final-cta .mascot-placeholder.mascot-cta {
+    width: 53%;
+    height: 80%;
+    left: 23.5%;
+    top: 10%;
+  }
+}
+
+/* Intro illustration: mascot placeholder for /PANA.webp plus soft ambience.
+   Specificity is bumped to 0,3,0 because panacea-feed.css ships as its own chunk
+   that can load after this one, and the reference rule is also 0,2,0. */
+.panacea-feed .page-intro .intro-illustration {
+  height: 330px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  isolation: auto;
+}
+
+@media (max-width: 680px) {
+  .panacea-feed .page-intro .intro-illustration {
+    height: 250px;
+  }
+}
+
+.intro-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 280px;
+  height: 280px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 244 206 / 85%) 0%, rgb(255 244 206 / 30%) 48%, transparent 72%);
+  animation: glow-pulse 5s ease-in-out infinite;
+}
+
+.intro-glow-b {
+  left: 12%;
+  top: 18%;
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgb(234 246 248 / 80%) 0%, transparent 70%);
+  animation-delay: -2.5s;
+}
+
+.intro-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px dashed rgb(101 147 111 / 22%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-14deg);
+}
+
+.intro-orbit-a {
+  width: 250px;
+  height: 165px;
+}
+
+.intro-orbit-b {
+  width: 205px;
+  height: 128px;
+  transform: translate(-50%, -50%) rotate(19deg);
+}
+
+.intro-cloud {
+  position: absolute;
+  width: 78px;
+  height: 26px;
+  border-radius: 50px;
+  background: rgb(255 253 248 / 88%);
+  filter: drop-shadow(0 5px 4px rgb(115 157 163 / 8%));
+  animation: cloud-drift 16s ease-in-out infinite alternate;
+}
+
+.intro-cloud::before,
+.intro-cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 7px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.intro-cloud::before {
+  left: 13px;
+  width: 33px;
+  height: 33px;
+}
+
+.intro-cloud::after {
+  right: 13px;
+  width: 26px;
+  height: 26px;
+}
+
+.intro-cloud-a {
+  left: 7%;
+  top: 16%;
+}
+
+.intro-cloud-b {
+  right: 8%;
+  top: 24%;
+  transform: scale(0.68);
+  animation-delay: -6s;
+}
+
+.intro-particle {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--butter-300);
+  box-shadow: 0 0 0 6px rgb(246 217 130 / 16%);
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+
+.intro-particle:nth-child(1) {
+  left: 9%;
+  top: 30%;
+}
+
+.intro-particle:nth-child(2) {
+  left: 22%;
+  top: 68%;
+  width: 7px;
+  height: 7px;
+  background: var(--sage-600);
+  box-shadow: 0 0 0 5px rgb(101 147 111 / 14%);
+  animation-delay: -0.6s;
+}
+
+.intro-particle:nth-child(3) {
+  left: 38%;
+  top: 18%;
+  animation-delay: -1.2s;
+}
+
+.intro-particle:nth-child(4) {
+  left: 62%;
+  top: 74%;
+  width: 7px;
+  height: 7px;
+  background: var(--peach-300);
+  box-shadow: 0 0 0 5px rgb(243 185 157 / 18%);
+  animation-delay: -1.8s;
+}
+
+.intro-particle:nth-child(5) {
+  left: 78%;
+  top: 33%;
+  animation-delay: -2.4s;
+}
+
+.intro-particle:nth-child(6) {
+  left: 90%;
+  top: 62%;
+  width: 7px;
+  height: 7px;
+  background: var(--sage-600);
+  box-shadow: 0 0 0 5px rgb(101 147 111 / 14%);
+  animation-delay: -3s;
+}
+
+.intro-ground {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  width: 190px;
+  height: 34px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(101 147 111 / 22%) 0%, transparent 72%);
+  filter: blur(5px);
+}
+
+.intro-mascot {
+  left: 50%;
+  top: 6%;
+  width: 285px;
+  height: 307px;
+  transform: translateX(-50%);
+  animation: mascot-float 4.5s ease-in-out infinite;
+}
+
+@media (max-width: 680px) {
+  .intro-mascot {
+    width: 195px;
+    height: 222px;
+    top: 4%;
+  }
+
+  .intro-orbit-a {
+    width: 180px;
+    height: 120px;
+  }
+
+  .intro-orbit-b {
+    width: 145px;
+    height: 92px;
+  }
+
+  .intro-ground {
+    bottom: 3%;
+    width: 140px;
+    height: 26px;
+  }
+
+  .intro-glow {
+    width: 220px;
+    height: 220px;
+  }
+}
+

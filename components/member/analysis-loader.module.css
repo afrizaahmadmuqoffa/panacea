@@ -1,0 +1,339 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  width: 100vw;
+  height: 100dvh;
+  padding: 18px;
+  background: rgba(242, 243, 228, 0.82);
+  backdrop-filter: blur(11px);
+  overscroll-behavior: contain;
+}
+
+.card {
+  width: min(100%, 510px);
+  padding: 24px 26px 20px;
+  text-align: center;
+  border: 1px solid #e0e8d4;
+  border-radius: 27px;
+  background: #fffdf6;
+  box-shadow: 0 25px 65px rgb(67 83 54 / 13%);
+  overflow: hidden;
+  animation: loader-arrive 320ms ease-out both;
+}
+
+.scene {
+  position: relative;
+  height: 195px;
+  overflow: hidden;
+  border-radius: 19px;
+  background: linear-gradient(#e9f4df 0%, #f8f4d9 72%, #e5efd9 100%);
+  margin-bottom: 18px;
+  isolation: isolate;
+}
+
+.hill {
+  position: absolute;
+  bottom: -56px;
+  width: 120%;
+  height: 120px;
+  border-radius: 50%;
+}
+
+.hillBack {
+  left: -25%;
+  background: #c6ddb7;
+  transform: rotate(-7deg);
+}
+
+.hillFront {
+  left: 18%;
+  bottom: -76px;
+  background: #92bd82;
+  transform: rotate(5deg);
+}
+
+.panaWrap {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: -4px;
+  width: 165px;
+  height: 185px;
+  transform: translateX(-50%);
+}
+
+.pana {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 7px rgb(61 73 63 / 10%));
+}
+
+.cloud {
+  position: absolute;
+  width: 67px;
+  height: 17px;
+  border-radius: 999px;
+  background: rgba(255, 255, 248, 0.75);
+  top: 37px;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloud::after {
+  left: 32px;
+  width: 20px;
+  height: 20px;
+}
+
+.cloudOne {
+  left: 9%;
+}
+
+.cloudTwo {
+  right: 9%;
+  top: 61px;
+  transform: scale(0.7);
+}
+
+.flower {
+  position: absolute;
+  z-index: 2;
+  color: #f2cd76;
+  font-size: 23px;
+}
+
+.flowerOne {
+  bottom: 21px;
+  left: 17%;
+}
+
+.flowerTwo {
+  bottom: 30px;
+  right: 19%;
+  font-size: 16px;
+}
+
+.orbit {
+  position: absolute;
+  z-index: 4;
+  font-size: 21px;
+  color: #d4aa50;
+}
+
+.orbitLeft {
+  left: 34%;
+  top: 48px;
+}
+
+.orbitRight {
+  right: 32%;
+  top: 31px;
+}
+
+.kicker {
+  display: block;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.35px;
+  color: #8b9d7b;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 1000;
+  letter-spacing: -0.45px;
+  margin: 8px 0 6px;
+  color: var(--bark-900);
+}
+
+.desc {
+  font-size: 11px;
+  color: #818c7a;
+  margin: 0 0 16px;
+}
+
+.progressTrack {
+  height: 7px;
+  overflow: hidden;
+  background: #edf0e4;
+  border-radius: 999px;
+}
+
+.progressBar {
+  display: block;
+  width: 38%;
+  height: 100%;
+  background: linear-gradient(90deg, #b8d5a7, #64976a);
+  border-radius: 999px;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 9px;
+  color: #a0a797;
+  margin-top: 11px;
+}
+
+.footnote {
+  display: block;
+  margin-top: 16px;
+  color: #a6aa9c;
+  font-size: 8px;
+}
+
+@media (max-width: 520px) {
+  .card {
+    padding: 16px 17px 18px;
+  }
+
+  .scene {
+    height: 160px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .desc {
+    font-size: 10px;
+  }
+
+  .steps {
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panaWrap {
+    animation: investigate 2.3s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+
+  .cloud {
+    animation: cloudDrift 9s ease-in-out infinite alternate;
+  }
+
+  .cloudTwo {
+    animation-delay: -4s;
+  }
+
+  .flower {
+    animation: flowerBob 3s ease-in-out infinite;
+  }
+
+  .flowerTwo {
+    animation-delay: -1.4s;
+  }
+
+  .orbit {
+    animation: orbitSpin 4s linear infinite;
+  }
+
+  .orbitRight {
+    animation-direction: reverse;
+  }
+
+  .progressBar {
+    animation: progress-sweep 2.4s ease-in-out infinite;
+  }
+
+  .steps span:nth-child(1) {
+    animation: step-cycle 6s ease-in-out infinite;
+  }
+
+  .steps span:nth-child(2) {
+    animation: step-cycle 6s ease-in-out 2s infinite;
+  }
+
+  .steps span:nth-child(3) {
+    animation: step-cycle 6s ease-in-out 4s infinite;
+  }
+}
+
+@keyframes loader-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes investigate {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px) rotate(1deg);
+  }
+}
+
+@keyframes cloudDrift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes flowerBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes orbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes progress-sweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(180%);
+  }
+}
+
+@keyframes step-cycle {
+  0%,
+  25% {
+    color: #5f8b64;
+    font-weight: 900;
+  }
+  30%,
+  100% {
+    color: #a0a797;
+    font-weight: 700;
+  }
+}

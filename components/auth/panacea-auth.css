@@ -1,0 +1,723 @@
+/*
+ * Auth page: design tokens, page background, and the illustrated garden scene.
+ * Layout and card styling live as Tailwind utilities in auth-shell.tsx,
+ * login-form.tsx, register-form.tsx, and password-strength.tsx.
+ */
+
+.panacea-auth {
+  --cream: #f8f5e9;
+  --paper: #fffdf6;
+  --paper-deep: #f2eddb;
+  --sage: #7ea887;
+  --sage-dark: #4e7b60;
+  --sage-light: #dce9d4;
+  --leaf: #aac99c;
+  --peach: #f2c9b2;
+  --butter: #f5df91;
+  --ink: #35483d;
+  --muted: #7c897b;
+  --line: #e7e5d5;
+  --shadow: 0 20px 55px rgb(69 92 66 / 12%);
+  --round: 26px;
+  --ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.panacea-auth * {
+  box-sizing: border-box;
+}
+
+body > .panacea-auth {
+  background:
+    radial-gradient(ellipse at 8% 2%, rgb(214 231 199 / 85%), transparent 40%),
+    radial-gradient(ellipse at 96% 90%, rgb(243 201 178 / 55%), transparent 38%),
+    linear-gradient(180deg, #f7f2e0 0%, #f1ecd8 55%, #e9efe0 100%);
+}
+
+.panacea-auth .ambient {
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0.45;
+}
+
+.panacea-auth .ambient-one {
+  width: 380px;
+  height: 380px;
+  left: -220px;
+  top: 30%;
+  background: radial-gradient(circle, rgb(173 207 158 / 42%), transparent 70%);
+  animation: auth-ambient-drift 18s ease-in-out infinite alternate;
+}
+
+.panacea-auth .ambient-two {
+  width: 330px;
+  height: 330px;
+  right: -180px;
+  top: 4%;
+  background: radial-gradient(circle, rgb(245 223 145 / 35%), transparent 70%);
+  animation: auth-ambient-drift 22s ease-in-out infinite alternate-reverse;
+}
+
+.panacea-auth .garden-scene {
+  position: absolute;
+  inset: 240px 0 0;
+  overflow: hidden;
+}
+
+.panacea-auth .scene-sun {
+  position: absolute;
+  right: 13%;
+  top: 2%;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: #f8e7a9;
+  box-shadow:
+    0 0 0 13px #f8e7a92b,
+    0 0 45px #f8e7a955;
+  animation: auth-sun-breathe 7s ease-in-out infinite;
+}
+
+.panacea-auth .scene-cloud {
+  position: absolute;
+  width: 80px;
+  height: 23px;
+  border-radius: 30px;
+  background: #fffdf2d9;
+  filter: drop-shadow(0 5px 4px #7e9b7020);
+  animation: auth-cloud-drift 17s ease-in-out infinite alternate;
+}
+
+.panacea-auth .scene-cloud::before,
+.panacea-auth .scene-cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 7px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.panacea-auth .scene-cloud::before {
+  width: 33px;
+  height: 33px;
+  left: 13px;
+}
+
+.panacea-auth .scene-cloud::after {
+  width: 27px;
+  height: 27px;
+  right: 13px;
+}
+
+.panacea-auth .cloud-a {
+  top: 15%;
+  left: 10%;
+}
+
+.panacea-auth .cloud-b {
+  top: 29%;
+  right: 28%;
+  transform: scale(0.68);
+  animation-delay: -8s;
+}
+
+.panacea-auth .mountain {
+  position: absolute;
+  bottom: 31%;
+  width: 60%;
+  height: 34%;
+  clip-path: polygon(0 100%, 28% 20%, 43% 53%, 65% 0, 100% 100%);
+}
+
+.panacea-auth .mountain-back {
+  left: -8%;
+  background: #c7d9b9;
+  opacity: 0.75;
+}
+
+.panacea-auth .mountain-mid {
+  right: -12%;
+  height: 27%;
+  width: 68%;
+  background: #b6d0ac;
+  opacity: 0.8;
+  clip-path: polygon(0 100%, 26% 30%, 45% 58%, 69% 0, 100% 100%);
+}
+
+.panacea-auth .hill {
+  position: absolute;
+  bottom: -13%;
+  height: 56%;
+  width: 115%;
+  border-radius: 48% 52% 0 0;
+}
+
+.panacea-auth .hill-back {
+  left: -16%;
+  bottom: 9%;
+  background: #a8c99d;
+  transform: rotate(-5deg);
+}
+
+.panacea-auth .hill-front {
+  left: -8%;
+  bottom: -28%;
+  height: 57%;
+  background: linear-gradient(180deg, #82b184, #6d9e78);
+  transform: rotate(4deg);
+}
+
+.panacea-auth .path {
+  position: absolute;
+  bottom: -13%;
+  left: 37%;
+  width: 33%;
+  height: 43%;
+  background: #dfd2a6;
+  clip-path: path("M 45 0 C 100 15 130 48 105 85 C 83 115 70 148 112 200 L 175 220 C 140 170 148 137 171 95 C 195 49 145 8 100 0 Z");
+  opacity: 0.85;
+  transform: rotate(-8deg);
+}
+
+.panacea-auth .tiny-house {
+  position: absolute;
+  z-index: 2;
+  left: 28%;
+  bottom: 29%;
+  width: 112px;
+  height: 115px;
+  animation: auth-house-float 6s ease-in-out infinite;
+}
+
+.panacea-auth .house-body {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  width: 91px;
+  height: 67px;
+  border: 3px solid #d8b98a;
+  border-radius: 5px 5px 8px 8px;
+  background: linear-gradient(90deg, #fff3d7, #fffae9);
+  box-shadow: inset -9px 0 #e9d5ad;
+}
+
+.panacea-auth .house-roof {
+  position: absolute;
+  z-index: 2;
+  top: 4px;
+  left: 0;
+  width: 112px;
+  height: 61px;
+  background: #bd8066;
+  clip-path: polygon(50% 0, 100% 72%, 94% 80%, 50% 20%, 6% 80%, 0 72%);
+  filter: drop-shadow(0 5px 0 #99624e);
+}
+
+.panacea-auth .house-window {
+  position: absolute;
+  left: 17px;
+  top: 15px;
+  width: 25px;
+  height: 25px;
+  border: 3px solid #e0bf8b;
+  border-radius: 4px;
+  background: #a8c9c6;
+  box-shadow: inset 0 -7px #83aaa2;
+}
+
+.panacea-auth .house-window::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 0;
+  height: 100%;
+  border-left: 2px solid #e0bf8b;
+}
+
+.panacea-auth .house-door {
+  position: absolute;
+  right: 12px;
+  bottom: 0;
+  width: 25px;
+  height: 44px;
+  border: 3px solid #c9a67c;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: #8caa80;
+}
+
+.panacea-auth .house-door::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 22px;
+  width: 4px;
+  height: 4px;
+  background: #e9d08b;
+  border-radius: 50%;
+}
+
+.panacea-auth .tree {
+  position: absolute;
+  z-index: 2;
+  bottom: 24%;
+  width: 90px;
+  height: 140px;
+}
+
+.panacea-auth .tree-left {
+  left: 8%;
+  transform: scale(0.88);
+}
+
+.panacea-auth .tree-right {
+  right: 6%;
+  bottom: 25%;
+  transform: scale(1.05);
+}
+
+.panacea-auth .tree i {
+  position: absolute;
+  bottom: 0;
+  left: 38px;
+  width: 18px;
+  height: 68px;
+  border-radius: 9px 9px 4px 4px;
+  background: linear-gradient(90deg, #9a704e, #bd9166 48%, #8d6849);
+}
+
+.panacea-auth .tree b {
+  position: absolute;
+  bottom: 42px;
+  left: 4px;
+  width: 78px;
+  height: 82px;
+  border-radius: 45% 55% 49% 51%;
+  background: #76a77b;
+  box-shadow:
+    inset 9px 5px #95bd88,
+    inset -7px -6px #5c9168,
+    0 7px 0 #65986b;
+}
+
+.panacea-auth .tree b::before,
+.panacea-auth .tree b::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #91bb83;
+}
+
+.panacea-auth .tree b::before {
+  width: 42px;
+  height: 44px;
+  left: -7px;
+  top: 22px;
+}
+
+.panacea-auth .tree b::after {
+  width: 45px;
+  height: 42px;
+  right: -7px;
+  top: 17px;
+  background: #6f9f72;
+}
+
+.panacea-auth .flower {
+  position: absolute;
+  z-index: 3;
+  color: #f5d982;
+  text-shadow: 0 2px #d8bd6b;
+  font-size: 32px;
+  animation: auth-flower-bob 4s ease-in-out infinite;
+}
+
+.panacea-auth .flower-one {
+  bottom: 22%;
+  left: 21%;
+}
+
+.panacea-auth .flower-two {
+  bottom: 18%;
+  right: 22%;
+  font-size: 25px;
+  animation-delay: -2s;
+}
+
+.panacea-auth .mushroom {
+  position: absolute;
+  z-index: 3;
+  bottom: 19%;
+  right: 35%;
+  width: 33px;
+  height: 43px;
+}
+
+.panacea-auth .mushroom i {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 34px;
+  height: 21px;
+  border-radius: 55% 55% 35% 35%;
+  background: #d88775;
+  box-shadow: inset 0 4px #eaa391;
+}
+
+.panacea-auth .mushroom i::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  width: 6px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff0d8;
+  box-shadow: 12px 5px #fff0d8;
+}
+
+.panacea-auth .mushroom b {
+  position: absolute;
+  z-index: 1;
+  left: 9px;
+  top: 13px;
+  width: 16px;
+  height: 28px;
+  border-radius: 3px 3px 7px 7px;
+  background: #f6e4c6;
+}
+
+.panacea-auth .floating-note {
+  position: absolute;
+  z-index: 4;
+  background: #fffdf1e8;
+  border: 1px solid #fff;
+  border-radius: 15px;
+  padding: 10px 13px;
+  color: #66856c;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px #557c5420;
+  animation: auth-note-float 5s ease-in-out infinite;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.panacea-auth .floating-note svg {
+  display: block;
+  flex: none;
+}
+
+.panacea-auth .note-one {
+  left: 13%;
+  bottom: 44%;
+  transform: rotate(-4deg);
+}
+
+.panacea-auth .note-two {
+  right: 12%;
+  bottom: 44%;
+  animation-delay: -2.5s;
+  transform: rotate(3deg);
+}
+
+.panacea-auth .mascot-placeholder {
+  position: absolute;
+  z-index: 5;
+  left: 48%;
+  bottom: 10%;
+  width: 135px;
+  height: 142px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  animation: auth-mascot-bob 4.5s ease-in-out infinite;
+}
+
+.panacea-auth .mascot-placeholder img {
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 8px #416d4b24);
+}
+
+.panacea-auth .mascot-fallback {
+  font-size: 60px;
+  filter: drop-shadow(0 7px 3px #456e4a25);
+}
+
+.panacea-auth .mascot-placeholder:has(img:not([style*="display: none"])) .mascot-fallback {
+  display: none;
+}
+
+.panacea-auth .mascot-placeholder small {
+  margin-top: 2px;
+  white-space: nowrap;
+  border-radius: 99px;
+  padding: 6px 9px;
+  background: #fffdf1d9;
+  color: #66816b;
+  font-size: 9px;
+  font-weight: 800;
+  box-shadow: 0 3px 10px #456e4a16;
+}
+
+.panacea-auth .garden-scene .hill-back {
+  width: 118%;
+}
+
+.panacea-auth .garden-scene .hill-front {
+  border-radius: 46% 14% 0 0;
+}
+
+.panacea-auth .garden-scene .mascot-placeholder {
+  left: 45%;
+  width: 202px;
+  height: 213px;
+}
+
+.panacea-auth .garden-scene .mascot-placeholder img {
+  max-width: 180px;
+  max-height: 180px;
+}
+
+.panacea-auth .garden-scene .tiny-house {
+  animation: none;
+}
+
+.panacea-auth .garden-scene .house-roof {
+  clip-path: polygon(50% 0, 100% 76%, 0 76%);
+}
+
+.panacea-auth .message-error {
+  color: #b95f51;
+}
+
+.panacea-auth .message-success {
+  color: #5c8564;
+}
+
+@keyframes auth-card-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes auth-cloud-drift {
+  from {
+    translate: -8px 0;
+  }
+  to {
+    translate: 18px -6px;
+  }
+}
+
+@keyframes auth-house-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0.5deg);
+  }
+}
+
+@keyframes auth-mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes auth-note-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -7px;
+  }
+}
+
+@keyframes auth-flower-bob {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: -4deg;
+  }
+  50% {
+    translate: 0 -5px;
+    rotate: 5deg;
+  }
+}
+
+@keyframes auth-sun-breathe {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 0.95;
+  }
+  50% {
+    scale: 1.04;
+    opacity: 1;
+  }
+}
+
+@keyframes auth-ambient-drift {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(45px, -30px);
+  }
+}
+
+@media (max-width: 760px) {
+  .panacea-auth .garden-scene {
+    inset: 0;
+    opacity: 0.9;
+  }
+
+  .panacea-auth .scene-sun {
+    width: 48px;
+    height: 48px;
+    right: 12%;
+    top: 11%;
+  }
+
+  .panacea-auth .scene-cloud {
+    scale: 0.65;
+  }
+
+  .panacea-auth .mountain {
+    bottom: 24%;
+    height: 30%;
+  }
+
+  .panacea-auth .mountain-mid {
+    height: 24%;
+  }
+
+  .panacea-auth .hill-back {
+    bottom: 8%;
+    height: 42%;
+  }
+
+  .panacea-auth .hill-front {
+    bottom: -31%;
+    height: 48%;
+  }
+
+  .panacea-auth .tiny-house {
+    scale: 0.55;
+    transform-origin: bottom left;
+    left: 44%;
+    bottom: 19%;
+  }
+
+  .panacea-auth .tree {
+    scale: 0.58;
+    transform-origin: bottom center;
+    bottom: 17%;
+  }
+
+  .panacea-auth .tree-left {
+    left: 4%;
+  }
+
+  .panacea-auth .tree-right {
+    right: 0;
+  }
+
+  .panacea-auth .flower-one {
+    left: 26%;
+    bottom: 17%;
+    font-size: 22px;
+  }
+
+  .panacea-auth .flower-two {
+    right: 17%;
+    bottom: 13%;
+    font-size: 19px;
+  }
+
+  .panacea-auth .mushroom {
+    scale: 0.7;
+    right: 37%;
+    bottom: 13%;
+  }
+
+  .panacea-auth .path {
+    display: none;
+  }
+
+  .panacea-auth .floating-note {
+    font-size: 8px;
+    padding: 6px 8px;
+  }
+
+  .panacea-auth .note-one {
+    left: 4%;
+    bottom: 37%;
+  }
+
+  .panacea-auth .note-two {
+    right: 4%;
+    bottom: 37%;
+  }
+
+  .panacea-auth .mascot-placeholder {
+    scale: 0.58;
+    transform-origin: bottom center;
+    left: 61%;
+    bottom: -2%;
+  }
+
+  .panacea-auth .garden-scene .mascot-placeholder {
+    left: 58%;
+  }
+}
+
+@media (max-width: 390px) {
+  .panacea-auth .note-one {
+    left: 3%;
+    bottom: 33%;
+  }
+
+  .panacea-auth .note-two {
+    right: 2%;
+    bottom: 33%;
+  }
+
+  .panacea-auth .mascot-placeholder {
+    left: 58%;
+  }
+
+  .panacea-auth .garden-scene .mascot-placeholder {
+    left: 55%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panacea-auth *,
+  .panacea-auth *::before,
+  .panacea-auth *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
