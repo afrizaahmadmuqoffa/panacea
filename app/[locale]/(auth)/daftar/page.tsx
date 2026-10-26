@@ -22,7 +22,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
     <AuthShell
       locale={locale}
       variant="daftar"
-      title={tr("Mulai taman buktimu.", "Start your evidence garden.")}
+      title={tr("Buat Akun PANACEA Gratis.", "Create PANACEA Account for Free.")}
       description={tr(
         "Buat akun gratis untuk memeriksa klaim, menyimpan riwayat, dan belajar bersama komunitas.",
         "Create a free account to check claims, keep your history, and learn with the community.",
