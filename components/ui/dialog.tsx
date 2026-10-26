@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ export function Dialog({
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const onOpenChangeRef = useRef(onOpenChange);
+  const [mounted] = useState(() => typeof window !== "undefined");
   const titleId = useId();
   const descriptionId = useId();
 
@@ -75,9 +77,9 @@ export function Dialog({
     };
   }, [open]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
       <button
         type="button"
@@ -120,6 +122,7 @@ export function Dialog({
         {children}
         {footer ? <div className="mt-6 flex flex-wrap justify-end gap-2">{footer}</div> : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

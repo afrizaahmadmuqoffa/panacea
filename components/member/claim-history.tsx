@@ -26,6 +26,7 @@ import { formatDate } from "@/lib/i18n/format";
 import type { ClaimStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { MemberPageHeader } from "./member-page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 
 const inputIcon = {
   text: Type,
@@ -51,6 +52,8 @@ export function ClaimHistory() {
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || status !== "all" || type !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(filtered.length);
+  const pageSlice = filtered.slice(start, end);
   if (!hydrated) return <ClaimHistorySkeleton />;
 
   const statuses: Array<{ value: ClaimStatus | "all"; id: string; en: string }> = [
@@ -68,8 +71,8 @@ export function ClaimHistory() {
         icon={ClipboardList}
         title={tr("Klaim yang pernah kamu periksa", "Claims you have checked")}
         description={tr(
-          "Semua klaim di sini hanya milik akunmu. Data klaim pengguna lain tidak pernah ditampilkan.",
-          "Every claim here belongs to your account. Other users' claim data is never shown.",
+          "Semua klaim yang pernah kamu tanyakan.",
+          "All the claims you have ever asked about.",
         )}
         actions={
           <Link href={`/${locale}/cek-klaim`} className={buttonVariants({ variant: "cozy" })}>
@@ -80,12 +83,12 @@ export function ClaimHistory() {
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
             <Input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => { setQuery(event.target.value); setPage(1); }}
               placeholder={tr("Cari teks klaim...", "Search claim text...")}
               className="pl-11"
               aria-label={tr("Cari riwayat klaim", "Search claim history")}
@@ -93,7 +96,7 @@ export function ClaimHistory() {
           </div>
           <Select
             value={status}
-            onChange={(event) => setStatus(event.target.value)}
+            onChange={(event) => { setStatus(event.target.value); setPage(1); }}
             aria-label={tr("Filter status", "Filter status")}
             className="md:w-48"
           >
@@ -105,7 +108,7 @@ export function ClaimHistory() {
           </Select>
           <Select
             value={type}
-            onChange={(event) => setType(event.target.value)}
+            onChange={(event) => { setType(event.target.value); setPage(1); }}
             aria-label={tr("Filter jenis input", "Filter input type")}
             className="md:w-40"
           >
@@ -152,7 +155,7 @@ export function ClaimHistory() {
                   </TR>
                 </THead>
                 <TBody>
-                  {filtered.map((claim) => {
+                  {pageSlice.map((claim) => {
                     const Icon = inputIcon[claim.inputType];
                     const reviewHref = claim.reviewerFeedSlug
                       ? `/${locale}/feed-terverifikasi/${claim.reviewerFeedSlug}`
@@ -199,7 +202,7 @@ export function ClaimHistory() {
           </div>
 
           <div className="grid gap-3 md:hidden">
-            {filtered.map((claim) => (
+            {pageSlice.map((claim) => (
               <Link
                 key={claim.id}
                 href={
@@ -230,6 +233,7 @@ export function ClaimHistory() {
               </Link>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -239,7 +243,7 @@ export function ClaimHistory() {
           description={tr("Ubah kata kunci atau filter pencarian.", "Adjust the keyword or search filters.")}
           action={
             <div className="flex gap-2">
-              <Button variant="cozySoft" onClick={() => { setQuery(""); setStatus("all"); setType("all"); }}>
+              <Button variant="cozySoft" onClick={() => { setQuery(""); setStatus("all"); setType("all");; setPage(1) }}>
                 {tr("Hapus filter", "Clear filters")}
               </Button>
               <Link href={`/${locale}/cek-klaim`} className={buttonVariants({ variant: "cozy" })}>

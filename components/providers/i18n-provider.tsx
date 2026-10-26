@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useMemo, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 import { createTr, type Locale, type Tr } from "@/lib/i18n/config";
 
 type I18nContextValue = {
@@ -19,4 +20,18 @@ export function useI18n() {
   const context = useContext(I18nContext);
   if (!context) throw new Error("useI18n must be used within I18nProvider");
   return context;
+}
+
+/** Navigates to the same path with the first URL segment swapped for another locale. */
+export function useLocaleSwitch() {
+  const pathname = usePathname();
+  const router = useRouter();
+  return useCallback(
+    (next: Locale) => {
+      const segments = pathname.split("/");
+      segments[1] = next;
+      router.push(`${segments.join("/") || `/${next}`}${window.location.hash}`);
+    },
+    [pathname, router],
+  );
 }

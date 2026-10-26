@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BadgeCheck, FileCheck2, FilterX, Search, SearchX } from "lucide-react";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { categoryName } from "@/lib/data/categories";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { FeedCard } from "./feed-card";
 import type { Category, FeedItem, Verdict } from "@/lib/types";
 
@@ -67,10 +68,13 @@ export function FeedExplorer({ items, categories }: { items: FeedItem[]; categor
     [items, needle, category, verdict, locale],
   );
 
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+
   function resetFilters() {
     setQuery("");
     setCategory("all");
     setVerdict("all");
+    setPage(1);
   }
 
   return (
@@ -106,7 +110,7 @@ export function FeedExplorer({ items, categories }: { items: FeedItem[]; categor
             id="feed-search"
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => { setQuery(event.target.value); setPage(1); }}
             placeholder={tr("Cari klaim, topik, atau kata kunci...", "Search claims, topics, or keywords...")}
             autoComplete="off"
           />
@@ -119,7 +123,7 @@ export function FeedExplorer({ items, categories }: { items: FeedItem[]; categor
           id="category-filter"
           className="category-select"
           value={category}
-          onChange={(event) => setCategory(event.target.value)}
+          onChange={(event) => { setCategory(event.target.value); setPage(1); }}
         >
           <option value="all">{tr("Semua kategori", "All categories")}</option>
           {categories.map((item) => (
@@ -142,7 +146,7 @@ export function FeedExplorer({ items, categories }: { items: FeedItem[]; categor
               role="tab"
               aria-selected={active}
               className={`verdict-tab ${active ? "is-active" : ""}`}
-              onClick={() => setVerdict(tab.key)}
+              onClick={() => { setVerdict(tab.key); setPage(1); }}
             >
               {tab.label} <span>{count}</span>
             </button>
@@ -151,11 +155,14 @@ export function FeedExplorer({ items, categories }: { items: FeedItem[]; categor
       </div>
 
       {visible.length > 0 ? (
-        <div className="feed-grid" aria-live="polite">
-          {visible.map((item, index) => (
-            <FeedCard key={item.id} item={item} index={index} />
-          ))}
-        </div>
+        <>
+          <div className="feed-grid" aria-live="polite">
+            {visible.slice(start, end).map((item, index) => (
+              <FeedCard key={item.id} item={item} index={index} />
+            ))}
+          </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} tone="plain" />
+        </>
       ) : isFiltered ? (
         <div className="empty-state" data-empty="filtered">
           <span aria-hidden="true">{hasQuery ? <SearchX size={32} /> : <FilterX size={32} />}</span>

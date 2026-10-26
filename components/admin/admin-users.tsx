@@ -23,6 +23,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { StatusBadge } from "@/components/panacea/status-badge";
 import { formatDate } from "@/lib/i18n/format";
@@ -54,6 +55,9 @@ export function AdminUsers({ users }: { users: AdminUser[] }) {
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || role !== "all" || status !== "all";
+
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   const roleLabel = (value: AdminUser["role"]) =>
     value === "admin" ? tr("Admin", "Admin") : value === "reviewer" ? tr("Reviewer", "Reviewer") : tr("User", "User");
@@ -129,18 +133,18 @@ export function AdminUsers({ users }: { users: AdminUser[] }) {
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari nama atau email...", "Search name or email...")} className="pl-11" aria-label={tr("Cari pengguna", "Search users")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari nama atau email...", "Search name or email...")} className="pl-11" aria-label={tr("Cari pengguna", "Search users")} />
           </div>
-          <Select value={role} onChange={(event) => setRole(event.target.value)} aria-label={tr("Filter peran", "Filter role")} className="md:w-40">
+          <Select value={role} onChange={(event) => { setRole(event.target.value); setPage(1); }} aria-label={tr("Filter peran", "Filter role")} className="md:w-40">
             <option value="all">{tr("Semua peran", "All roles")}</option>
             <option value="user">User</option>
             <option value="reviewer">Reviewer</option>
             <option value="admin">Admin</option>
           </Select>
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-40">
+          <Select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-40">
             <option value="all">{tr("Semua status", "All statuses")}</option>
             <option value="active">{tr("Aktif", "Active")}</option>
             <option value="inactive">{tr("Nonaktif", "Inactive")}</option>
@@ -172,7 +176,7 @@ export function AdminUsers({ users }: { users: AdminUser[] }) {
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((user) => (
+                  {pageSlice.map((user) => (
                     <TR key={user.id}>
                       <TD>
                         <div className="flex items-center gap-2.5">
@@ -205,7 +209,7 @@ export function AdminUsers({ users }: { users: AdminUser[] }) {
           </div>
 
           <div className="grid gap-3 lg:hidden">
-            {visible.map((user) => (
+            {pageSlice.map((user) => (
               <article key={user.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex items-start gap-3">
                   <Avatar name={user.fullName} size="md" />
@@ -228,6 +232,8 @@ export function AdminUsers({ users }: { users: AdminUser[] }) {
               </article>
             ))}
           </div>
+
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -235,7 +241,7 @@ export function AdminUsers({ users }: { users: AdminUser[] }) {
           state="filtered"
           title={tr("Tidak ada pengguna yang cocok", "No matching users")}
           description={tr("Ubah kata kunci atau filter.", "Adjust the keyword or filters.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setRole("all"); setStatus("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setRole("all"); setStatus("all"); setPage(1); }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState

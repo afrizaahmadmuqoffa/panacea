@@ -707,7 +707,7 @@ export async function markAllNotificationsReadAction(locale: Locale) {
 export async function updateProfileAction(
   locale: Locale,
   formData: FormData,
-): Promise<{ error?: string; ok?: boolean }> {
+): Promise<{ error?: string; ok?: boolean; uiLanguage?: Locale }> {
   const auth = await requireUser(locale);
   if (!auth.session) return { error: auth.error ?? "Unauthorized" };
 
@@ -733,7 +733,8 @@ export async function updateProfileAction(
     .eq("id", auth.session.userId);
   if (result.error) return { error: fail(locale, "member", result.error) };
   revalidatePath(`/${locale}/profil`);
-  return { ok: true };
+  revalidatePath(`/${parsed.data.uiLanguage}/profil`);
+  return { ok: true, uiLanguage: parsed.data.uiLanguage };
 }
 
 export async function changePasswordAction(

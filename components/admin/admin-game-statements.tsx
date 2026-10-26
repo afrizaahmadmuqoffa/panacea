@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import type { Category, GameStatement } from "@/lib/types";
 
@@ -67,6 +68,8 @@ export function AdminGameStatements({
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || filter !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   const activeCount = statements.filter((item) => item.isActive).length;
 
@@ -197,9 +200,9 @@ export function AdminGameStatements({
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <div className="relative">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari pernyataan...", "Search statements...")} className="pl-11" aria-label={tr("Cari soal", "Search questions")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari pernyataan...", "Search statements...")} className="pl-11" aria-label={tr("Cari soal", "Search questions")} />
           </div>
-          <Select value={filter} onChange={(event) => setFilter(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-40">
+          <Select value={filter} onChange={(event) => { setFilter(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-40">
             <option value="all">{tr("Semua", "All")}</option>
             <option value="active">{tr("Aktif", "Active")}</option>
             <option value="inactive">{tr("Nonaktif", "Inactive")}</option>
@@ -222,7 +225,7 @@ export function AdminGameStatements({
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((statement) => (
+                  {pageSlice.map((statement) => (
                     <TR key={statement.id}>
                       <TD className="max-w-xl"><p className="line-clamp-2 text-xs font-bold text-bark-900">{statement.statement[locale]}</p></TD>
                       <TD><Badge variant={statement.isFact ? "sage" : "rose"}>{statement.isFact ? tr("Fakta", "Fact") : tr("Hoaks", "Hoax")}</Badge></TD>
@@ -236,7 +239,7 @@ export function AdminGameStatements({
             </TableWrap>
           </div>
           <div className="grid gap-3 lg:hidden">
-            {visible.map((statement) => (
+            {pageSlice.map((statement) => (
               <article key={statement.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex flex-wrap gap-2">
@@ -254,6 +257,7 @@ export function AdminGameStatements({
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -261,7 +265,7 @@ export function AdminGameStatements({
           state="filtered"
           title={tr("Tidak ada soal", "No questions")}
           description={tr("Ubah pencarian atau filter untuk melihat soal lain.", "Change the search or filter to see other questions.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setFilter("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setFilter("all");; setPage(1) }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState

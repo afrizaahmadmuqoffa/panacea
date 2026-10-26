@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { useI18n } from "@/components/providers/i18n-provider";
+import { useI18n, useLocaleSwitch } from "@/components/providers/i18n-provider";
 import { usePanacea } from "@/components/providers/panacea-provider";
 import { changePasswordAction, updateProfileAction } from "@/lib/actions/member";
 import { ProfileSkeleton } from "@/components/skeletons/member";
@@ -53,6 +53,7 @@ function ProfileViewInner({
   refresh: () => Promise<unknown>;
 }) {
   const { locale, tr } = useI18n();
+  const switchLocale = useLocaleSwitch();
   const [fullName, setFullName] = useState(profile.fullName);
   const [alias, setAlias] = useState(profile.alias);
   const [language, setLanguage] = useState(profile.uiLanguage);
@@ -86,8 +87,12 @@ function ProfileViewInner({
       toast.error(result.error);
       return;
     }
-    await refresh();
     toast.success(tr("Profil disimpan.", "Profile saved."));
+    if (result.uiLanguage && result.uiLanguage !== locale) {
+      switchLocale(result.uiLanguage);
+      return;
+    }
+    await refresh();
   }
 
   async function changePassword(event: FormEvent) {
@@ -243,8 +248,8 @@ function ProfileViewInner({
               </div>
             ) : null}
           </div>
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-bark-500">{tr("Perubahan berlaku untuk tampilan publik berikutnya.", "Changes apply to the next public display.")}</p>
+          <div className="mt-5 flex items-center justify-end gap-3 sm:justify-between">
+            <p className="hidden text-xs text-bark-500 sm:block">{tr("Perubahan berlaku untuk tampilan publik berikutnya.", "Changes apply to the next public display.")}</p>
             <Button type="submit" variant="cozy" disabled={saving}>
               {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Check className="size-4" aria-hidden="true" />}
               {saving ? tr("Menyimpan...", "Saving...") : tr("Simpan profil", "Save profile")}

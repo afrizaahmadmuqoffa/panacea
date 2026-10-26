@@ -219,12 +219,12 @@
   animation: twinkle 3.4s ease-in-out infinite;
 }
 
-.intro-particle:nth-child(1) {
+.intro-particle:nth-child(7) {
   left: 9%;
   top: 30%;
 }
 
-.intro-particle:nth-child(2) {
+.intro-particle:nth-child(8) {
   left: 22%;
   top: 68%;
   width: 7px;
@@ -234,13 +234,13 @@
   animation-delay: -0.6s;
 }
 
-.intro-particle:nth-child(3) {
+.intro-particle:nth-child(9) {
   left: 38%;
   top: 18%;
   animation-delay: -1.2s;
 }
 
-.intro-particle:nth-child(4) {
+.intro-particle:nth-child(10) {
   left: 62%;
   top: 74%;
   width: 7px;
@@ -250,13 +250,13 @@
   animation-delay: -1.8s;
 }
 
-.intro-particle:nth-child(5) {
+.intro-particle:nth-child(11) {
   left: 78%;
   top: 33%;
   animation-delay: -2.4s;
 }
 
-.intro-particle:nth-child(6) {
+.intro-particle:nth-child(12) {
   left: 90%;
   top: 62%;
   width: 7px;
@@ -316,3 +316,99 @@
   }
 }
 
+
+/* Mobile: hide the whole feed illustration (mascot included). */
+@media (max-width: 680px) {
+  .panacea-feed .page-intro .intro-illustration {
+    display: none;
+  }
+}
+
+/* Wide screens: larger backdrop so the ambience reads around the mascot. */
+@media (min-width: 1024px) {
+  .panacea-feed .page-intro .intro-illustration {
+    height: 400px;
+  }
+
+  .intro-glow {
+    width: 420px;
+    height: 420px;
+  }
+
+  .intro-glow-b {
+    width: 280px;
+    height: 280px;
+  }
+
+  .intro-orbit-a {
+    width: 340px;
+    height: 220px;
+  }
+
+  .intro-orbit-b {
+    width: 280px;
+    height: 175px;
+  }
+
+  .intro-cloud {
+    width: 92px;
+    height: 30px;
+  }
+
+  .intro-cloud-a {
+    left: 4%;
+  }
+
+  .intro-cloud-b {
+    right: 4%;
+  }
+
+  .intro-ground {
+    width: 250px;
+    height: 42px;
+  }
+
+  .intro-particle {
+    width: 11px;
+    height: 11px;
+  }
+
+  .intro-particle:nth-child(8),
+  .intro-particle:nth-child(10),
+  .intro-particle:nth-child(12) {
+    width: 9px;
+    height: 9px;
+  }
+}
+
+.intro-particle:nth-child(13) {
+  left: 4%;
+  top: 52%;
+  animation-delay: -0.9s;
+}
+
+.intro-particle:nth-child(14) {
+  left: 30%;
+  top: 84%;
+  width: 7px;
+  height: 7px;
+  background: var(--peach-300);
+  box-shadow: 0 0 0 5px rgb(243 185 157 / 18%);
+  animation-delay: -2.1s;
+}
+
+.intro-particle:nth-child(15) {
+  left: 70%;
+  top: 12%;
+  width: 7px;
+  height: 7px;
+  background: var(--sage-600);
+  box-shadow: 0 0 0 5px rgb(101 147 111 / 14%);
+  animation-delay: -1.5s;
+}
+
+.intro-particle:nth-child(16) {
+  left: 94%;
+  top: 44%;
+  animation-delay: -2.7s;
+}

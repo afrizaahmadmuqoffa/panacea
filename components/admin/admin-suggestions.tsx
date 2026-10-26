@@ -26,6 +26,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { StatusBadge } from "@/components/panacea/status-badge";
 import { formatDate } from "@/lib/i18n/format";
 import { categoryName } from "@/lib/data/categories";
@@ -60,6 +61,9 @@ export function AdminSuggestions({
 
   const hasQuery = query.trim().length > 0;
   const noSuggestions = suggestions.length === 0;
+
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   const pendingCount = suggestions.filter((suggestion) => suggestion.status === "pending").length;
 
@@ -103,9 +107,9 @@ export function AdminSuggestions({
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <div className="relative">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari saran reviewer...", "Search reviewer suggestions...")} className="pl-11" aria-label={tr("Cari saran", "Search suggestions")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari saran reviewer...", "Search reviewer suggestions...")} className="pl-11" aria-label={tr("Cari saran", "Search suggestions")} />
           </div>
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-48">
+          <Select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-48">
             <option value="all">{tr("Semua status", "All statuses")}</option>
             <option value="pending">{tr("Menunggu", "Pending")}</option>
             <option value="approved">{tr("Disetujui", "Approved")}</option>
@@ -119,7 +123,7 @@ export function AdminSuggestions({
 
       {visible.length > 0 ? (
         <div className="space-y-3">
-          {visible.map((suggestion) => {
+          {pageSlice.map((suggestion) => {
             const target = suggestion.targetSourceId ? sources.find((source) => source.id === suggestion.targetSourceId) : undefined;
             const ageDays = suggestion.ageDays ?? 0;
             const needsReminder = suggestion.status === "pending" && ageDays > 14;
@@ -174,9 +178,11 @@ export function AdminSuggestions({
           state="filtered"
           title={tr("Tidak ada saran yang cocok", "No matching suggestions")}
           description={tr("Ubah filter atau kembali nanti saat reviewer mengirim saran baru.", "Adjust the filters or return when reviewers submit new suggestions.")}
-          action={<Button variant="secondary" onClick={() => { setStatus("all"); setQuery(""); }}>{tr("Tampilkan semua", "Show all")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setStatus("all"); setQuery(""); setPage(1); }}>{tr("Tampilkan semua", "Show all")}</Button>}
         />
       )}
+
+      <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
 
       <Dialog
         open={selected !== null}

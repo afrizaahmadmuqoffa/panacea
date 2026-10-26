@@ -15,6 +15,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { categoryName } from "@/lib/data/categories";
 import { formatDate } from "@/lib/i18n/format";
@@ -48,6 +49,8 @@ export function AdminReviewers({
   }, [reviewers, query]);
 
   const hasQuery = query.trim().length > 0;
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   function openAdd() {
     setForm({ name: "", email: "", password: "", categories: [], isAvailable: true });
@@ -151,7 +154,7 @@ export function AdminReviewers({
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-          <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari nama atau email reviewer...", "Search reviewer name or email...")} className="pl-11" aria-label={tr("Cari reviewer", "Search reviewers")} />
+          <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari nama atau email reviewer...", "Search reviewer name or email...")} className="pl-11" aria-label={tr("Cari reviewer", "Search reviewers")} />
         </div>
       </div>
 
@@ -179,7 +182,7 @@ export function AdminReviewers({
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((reviewer) => (
+                  {pageSlice.map((reviewer) => (
                     <TR key={reviewer.id}>
                       <TD>
                         <div className="flex items-center gap-2.5">
@@ -216,7 +219,7 @@ export function AdminReviewers({
           </div>
 
           <div className="grid gap-3 lg:hidden">
-            {visible.map((reviewer) => (
+            {pageSlice.map((reviewer) => (
               <article key={reviewer.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex items-start gap-3">
                   <Avatar name={reviewer.fullName} size="md" />
@@ -240,6 +243,7 @@ export function AdminReviewers({
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : hasQuery ? (
         <EmptyState
@@ -247,7 +251,7 @@ export function AdminReviewers({
           state="filtered"
           title={tr("Tidak ada reviewer yang cocok", "No matching reviewers")}
           description={tr("Ubah kata kunci pencarian.", "Change the search keyword.")}
-          action={<Button variant="secondary" onClick={() => setQuery("")}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setPage(1); }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState

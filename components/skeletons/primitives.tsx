@@ -199,11 +199,15 @@ export function SkeletonFilterBar({
 }) {
   return (
     <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow" aria-hidden="true">
-      <div className={cn("grid gap-3", columns)}>
+      <div className={cn("grid gap-3", inputs >= 3 && "grid-cols-2", columns)}>
         {Array.from({ length: inputs }, (_, index) => (
           <Skeleton
             key={index}
-            className={cn("h-12 w-full rounded-md", index > 0 && "md:w-48")}
+            className={cn(
+              "h-12 w-full rounded-md",
+              index > 0 && "md:w-48",
+              index === 0 && inputs >= 3 && "col-span-2 md:col-span-1",
+            )}
           />
         ))}
       </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, ClipboardCheck, Megaphone, SearchCheck, User } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ClipboardCheck, Megaphone, User } from "lucide-react";
 import { LocaleSwitcher } from "@/components/panacea/locale-switcher";
 import { Logo } from "@/components/panacea/logo";
 import { PanaMascot } from "@/components/panacea/pana-mascot";
@@ -29,9 +29,6 @@ export function AuthShell({
 
       <header className="relative z-[3] mx-auto flex min-h-[82px] max-w-[1320px] items-center justify-between px-[42px] py-3 lt-760:min-h-[70px] lt-760:px-5 lt-760:py-2.5 lt-390:px-[14px]">
         <div className="flex flex-col items-start gap-0.5">
-          <Link className="inline-flex items-center" href={`/${locale}`} aria-label="PANACEA">
-            <Logo />
-          </Link>
           <Link
             href={`/${locale}`}
             className="inline-flex items-center gap-1.5 rounded-md py-1 text-xs font-bold text-bark-600 transition-colors hover:text-sage-700 focus-visible:outline-2 focus-visible:outline-offset-2"
@@ -51,12 +48,12 @@ export function AuthShell({
           !isLogin &&
             "grid-cols-[minmax(0,1fr)_minmax(430px,0.92fr)] items-start gap-[clamp(30px,4vw,65px)] pt-0",
           "lt-1000:w-[calc(100%_-_36px)] lt-1000:grid-cols-[minmax(0,0.9fr)_minmax(390px,1.1fr)] lt-1000:gap-7",
-          "lt-760:flex lt-760:min-h-0 lt-760:w-[min(100%_-_28px,490px)] lt-760:flex-col lt-760:gap-[15px] lt-760:px-0 lt-760:pt-2.5 lt-760:pb-[25px] lt-390:w-[calc(100%_-_20px)]",
+          "lt-760:flex lt-760:min-h-[calc(100vh_-_78px)] lt-760:w-[min(100%_-_28px,490px)] lt-760:flex-col lt-760:justify-center lt-760:gap-[15px] lt-760:px-0 lt-760:pt-2.5 lt-760:pb-[25px] lt-390:w-[calc(100%_-_20px)]",
         )}
       >
         <section
           className={cn(
-            "relative flex flex-col justify-between overflow-hidden rounded-[34px] bg-[linear-gradient(155deg,#e8efdc_0%,#f7f2df_53%,#dce9d7_100%)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.6)]",
+            "relative flex flex-col justify-between overflow-hidden rounded-[34px] bg-[linear-gradient(155deg,#e8efdc_0%,#f7f2df_53%,#dce9d7_100%)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.6)] lt-760:hidden",
             isLogin
               ? "h-[min(760px,calc(100vh_-_130px))] min-h-[690px] lt-1000:min-h-[650px] lt-760:h-[230px] lt-760:min-h-[230px]"
               : "sticky top-[18px] h-[calc(100vh_-_100px)] min-h-[650px] lt-1000:min-h-[620px] lt-760:relative lt-760:top-auto lt-760:h-[190px] lt-760:min-h-[190px]",
@@ -65,17 +62,12 @@ export function AuthShell({
           aria-label={tr("Ilustrasi taman PANACEA", "PANACEA garden illustration")}
         >
           <div className="relative z-[2] max-w-[590px] px-11 pt-12 lt-1000:px-7 lt-1000:pt-9 lt-760:max-w-[350px] lt-760:px-[22px] lt-760:pt-[22px] lt-390:pr-[14px] lt-390:pl-[17px]">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#ffffffb5] bg-[#fffaf0c9] px-[13px] py-[9px] text-[11px] font-extrabold tracking-[0.035em] text-[var(--sage-dark)] shadow-[0_5px_18px_#708a5710] lt-760:px-[10px] lt-760:py-[7px] lt-760:text-[9px]">
-              <span className="text-[#d1a84d]" aria-hidden="true">
-                <SearchCheck size={12} />
-              </span>{" "}
-              {isLogin
-                ? tr("Cek Faktamu Lagi", "Check your facts again")
-                : tr("Bebas dari Hoaks Kesehatan", "Free from health misinformation")}
+            <span className="inline-flex items-center lt-760:scale-90 lt-760:origin-left">
+              <Logo />
             </span>
             <h1
               className={cn(
-                "mt-[23px] mb-[15px] font-heading font-black leading-[1.13] tracking-[-0.045em] text-[#354b3d]",
+                "mt-[22px] mb-[15px] font-heading font-black leading-[1.13] tracking-[-0.045em] text-[#354b3d]",
                 isLogin
                   ? "text-[clamp(34px,3.25vw,48px)] lt-1000:text-[37px] lt-760:text-[27px]"
                   : "text-[clamp(34px,3.25vw,48px)] lt-1000:text-[37px] lt-760:text-[25px]",

@@ -9,6 +9,7 @@ import { buttonVariants, Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { NewSuggestionDialog } from "@/components/reviewer/new-suggestion-dialog";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { categoryName } from "@/lib/data/categories";
@@ -40,6 +41,8 @@ export function ReviewerKnowledgeBase({
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || type !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   const suggestionSources = useMemo(
     () => sources.map((source) => ({ id: source.id, title: source.title })),
@@ -75,7 +78,7 @@ export function ReviewerKnowledgeBase({
             />
             <Input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => { setQuery(event.target.value); setPage(1); }}
               placeholder={tr("Cari judul atau penulis...", "Search title or author...")}
               className="pl-11"
               aria-label={tr("Cari sumber KB", "Search KB sources")}
@@ -83,7 +86,7 @@ export function ReviewerKnowledgeBase({
           </div>
           <Select
             value={type}
-            onChange={(event) => setType(event.target.value)}
+            onChange={(event) => { setType(event.target.value); setPage(1); }}
             aria-label={tr("Filter jenis", "Filter type")}
             className="md:w-40"
           >
@@ -120,7 +123,7 @@ export function ReviewerKnowledgeBase({
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((source) => (
+                  {pageSlice.map((source) => (
                     <TR key={source.id}>
                       <TD>
                         <div className="flex items-start gap-2.5">
@@ -167,7 +170,7 @@ export function ReviewerKnowledgeBase({
           </div>
 
           <div className="grid gap-3 lg:hidden">
-            {visible.map((source) => (
+            {pageSlice.map((source) => (
               <article
                 key={source.id}
                 className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300"
@@ -194,6 +197,7 @@ export function ReviewerKnowledgeBase({
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -201,7 +205,7 @@ export function ReviewerKnowledgeBase({
           state="filtered"
           title={tr("Sumber tidak ditemukan", "No sources found")}
           description={tr("Ubah filter untuk melihat sumber lain.", "Adjust the filters to see other sources.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setType("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setType("all");; setPage(1) }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState

@@ -25,7 +25,7 @@ export function BadgeGallery() {
       <MemberHero
         kicker={tr("Koleksi", "Collection")}
         kickerIcon={Award}
-        title={tr("Badge perjalanan belajarmu", "Your learning journey badges")}
+        title={tr("Koleksi badgemu", "Your badges collection")}
         description={tr(
           `Kamu sudah membuka ${earned.length} dari ${badges.length} badge. Badge permanen dan tidak hilang saat streak terputus.`,
           `You have unlocked ${earned.length} of ${badges.length} badges. Badges are permanent and do not disappear when a streak breaks.`,
@@ -53,8 +53,8 @@ export function BadgeGallery() {
         <Info className="mt-0.5 size-4 shrink-0 text-sage-700" aria-hidden="true" />
         <p>
           {tr(
-            "Admin dapat mengubah ambang badge. Perubahan hanya berlaku untuk pencapaian baru dan tidak mencabut badge yang sudah terbuka.",
-            "Admins can change badge thresholds. Changes only apply to new achievements and do not revoke badges already unlocked.",
+            "Ambang badge dapat berubah. Perubahan hanya berlaku untuk pencapaian baru dan tidak mencabut badge yang sudah terbuka.",
+            "Badge treshold can changed. Changes only apply to new achievements and do not revoke badges already unlocked.",
           )}
         </p>
       </div>

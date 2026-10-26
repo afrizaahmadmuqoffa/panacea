@@ -12,6 +12,7 @@ import {
   Gamepad2,
   History,
   LayoutDashboard,
+  Menu,
   MessagesSquare,
   SearchCheck,
   Settings2,
@@ -20,11 +21,12 @@ import {
   Trophy,
   UserRound,
   Users,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { usePanacea } from "@/components/providers/panacea-provider";
@@ -138,30 +140,6 @@ function getNav(area: Area): NavGroup[] {
   ];
 }
 
-const mobileItems: Record<Area, NavItem[]> = {
-  member: [
-    { href: "/dashboard", label: { id: "Dasbor", en: "Home" }, icon: LayoutDashboard },
-    { href: "/cek-klaim", label: { id: "Cek", en: "Check" }, icon: SearchCheck },
-    { href: "/forum", label: { id: "Forum", en: "Forum" }, icon: MessagesSquare },
-    { href: "/game", label: { id: "Game", en: "Game" }, icon: Gamepad2 },
-    { href: "/profil", label: { id: "Profil", en: "Profile" }, icon: UserRound },
-  ],
-  reviewer: [
-    { href: "/reviewer/dashboard", label: { id: "Dasbor", en: "Home" }, icon: LayoutDashboard },
-    { href: "/reviewer/tugas", label: { id: "Tugas", en: "Tasks" }, icon: ClipboardCheck },
-    { href: "/reviewer/knowledge-base", label: { id: "KB", en: "KB" }, icon: BookOpen },
-    { href: "/forum", label: { id: "Forum", en: "Forum" }, icon: MessagesSquare },
-    { href: "/profil", label: { id: "Profil", en: "Profile" }, icon: UserRound },
-  ],
-  admin: [
-    { href: "/admin/dashboard", label: { id: "Dasbor", en: "Home" }, icon: Gauge },
-    { href: "/admin/pengguna", label: { id: "Orang", en: "People" }, icon: Users },
-    { href: "/admin/klaim", label: { id: "Klaim", en: "Claims" }, icon: SearchCheck },
-    { href: "/admin/knowledge-base", label: { id: "KB", en: "KB" }, icon: BookOpen },
-    { href: "/admin/pengaturan", label: { id: "Setelan", en: "Settings" }, icon: Settings2 },
-  ],
-};
-
 export function DashboardShell({
   area,
   session,
@@ -178,9 +156,25 @@ export function DashboardShell({
   const unread = notifications.filter((notification) => !notification.isRead).length;
   const displayName = session.fullName;
 
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     if (hydrated && storeUserId !== session.userId) void refresh();
   }, [hydrated, storeUserId, session.userId, refresh]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   const prefix = `/${locale}`;
   const hrefFor = (href: string) => `${prefix}${href}`;
@@ -212,11 +206,25 @@ export function DashboardShell({
         className="paper-grain pointer-events-none fixed inset-0 z-[55] opacity-[0.075]"
       />
 
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-[#eae5d9] bg-[#fffcf5]/95 backdrop-blur-xl lg:flex">
-        <div className="flex h-[76px] items-center border-b border-[#eae5d9] px-6">
-          <Link href={hrefFor(homeHref)} aria-label="PANACEA" className="inline-flex min-h-11 items-center">
+      <aside
+        id="app-sidebar"
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex w-[280px] max-w-[85vw] flex-col border-r border-[#eae5d9] bg-[#fffcf5]/95 backdrop-blur-xl transition-transform duration-200 lg:z-30 lg:w-[248px] lg:max-w-none lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <div className="flex h-[76px] items-center justify-between border-b border-[#eae5d9] px-6">
+          <Link href={hrefFor(homeHref)} onClick={() => setOpen(false)} aria-label="PANACEA" className="inline-flex min-h-11 items-center">
             <Logo />
           </Link>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="grid size-10 place-items-center rounded-full text-bark-700 transition hover:bg-[#f1f5e9] lg:hidden"
+            aria-label={tr("Tutup menu", "Close menu")}
+          >
+            <X className="size-5" aria-hidden="true" />
+          </button>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-5 no-scrollbar">
           {nav.map((group, index) => (
@@ -234,6 +242,7 @@ export function DashboardShell({
                     <Link
                       key={item.href}
                       href={hrefFor(item.href)}
+                      onClick={() => setOpen(false)}
                       target={item.newTab ? "_blank" : undefined}
                       rel={item.newTab ? "noopener noreferrer" : undefined}
                       className={cn(
@@ -263,14 +272,30 @@ export function DashboardShell({
         </div>
       </aside>
 
+      {open ? (
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          aria-label={tr("Tutup menu", "Close menu")}
+          className="fixed inset-0 z-40 bg-bark-900/40 backdrop-blur-[2px] lg:hidden"
+        />
+      ) : null}
+
       <div className="relative z-10 lg:pl-[248px]">
         <header className="sticky top-0 z-20 border-b border-[#eae5d9] bg-[#f8f7ec]/80 backdrop-blur-xl">
           <div className="flex h-[68px] items-center justify-between gap-3 px-4 sm:px-6 lg:h-[72px] lg:px-8">
             <div className="flex items-center gap-2.5">
-              <Link href={hrefFor(homeHref)} className="inline-flex min-h-11 items-center lg:hidden" aria-label="PANACEA">
-                <Logo />
-              </Link>
-              <span className="hidden text-xs font-bold text-bark-500 sm:inline">
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="grid size-10 place-items-center rounded-full text-bark-700 transition hover:bg-[#f1f5e9] lg:hidden"
+                aria-label={tr("Buka menu", "Open menu")}
+                aria-expanded={open}
+                aria-controls="app-sidebar"
+              >
+                <Menu className="size-5" aria-hidden="true" />
+              </button>
+              <span className="text-xs font-bold text-bark-500">
                 {areaLabel[area][locale]}
               </span>
             </div>
@@ -297,44 +322,11 @@ export function DashboardShell({
 
         <main
           id="main-content"
-          className="mx-auto w-full max-w-[1200px] px-4 pb-32 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-14"
+          className="mx-auto w-full max-w-[1200px] px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-14"
         >
           {children}
         </main>
       </div>
-
-      <nav
-        className="fixed inset-x-3 bottom-3 z-30 rounded-[22px] border border-[#eae5d9] bg-[#fffdf8]/95 shadow-[0_4px_0_rgb(232_226_213/0.6),0_14px_28px_rgb(61_73_63/0.12)] backdrop-blur-xl lg:hidden"
-        aria-label={tr("Navigasi utama", "Main navigation")}
-      >
-        <div className="mx-auto flex max-w-md items-stretch justify-around px-2 pb-[max(0.25rem,env(safe-area-inset-bottom))]">
-          {mobileItems[area].map((item) => {
-            const active = isActive(item.href, item.exact);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={hrefFor(item.href)}
-                className={cn(
-                  "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-xs font-bold text-bark-500",
-                  active && "text-sage-700",
-                )}
-                aria-current={active ? "page" : undefined}
-              >
-                <span
-                  className={cn(
-                    "grid size-8 place-items-center rounded-full transition",
-                    active && "bg-sage-100 shadow-[inset_0_-2px_0_rgb(84_122_96/0.12)]",
-                  )}
-                >
-                  <Icon className={cn("size-[18px]", active && "cozy-wiggle")} aria-hidden="true" />
-                </span>
-                <span className="truncate">{item.label[locale]}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
     </div>
   );
 }

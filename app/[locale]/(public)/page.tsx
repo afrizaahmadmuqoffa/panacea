@@ -6,7 +6,6 @@ import {
   BookOpen,
   Check,
   Flower2,
-  Play,
   Search,
   SearchCheck,
   Smile,
@@ -131,7 +130,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
               </Link>
               <Link className="button button-soft button-large" href={`/${locale}/feed-terverifikasi`}>
                 <span className="button-play" aria-hidden="true">
-                  <Play size={12} fill="currentColor" />
+                  <SearchCheck size={12} />
                 </span>{" "}
                 {tr("Jelajahi hasil verifikasi", "Explore verification results")}
               </Link>

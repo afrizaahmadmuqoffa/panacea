@@ -26,6 +26,7 @@ import { NewThreadDialog } from "@/components/member/new-thread-dialog";
 import { formatDate } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
 import { MemberPageHeader } from "./member-page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 
 export function ForumList() {
   const { locale, tr } = useI18n();
@@ -56,6 +57,8 @@ export function ForumList() {
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || category !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   if (!hydrated) return <ForumListSkeleton />;
 
@@ -63,7 +66,7 @@ export function ForumList() {
     <div className="space-y-6">
       <MemberPageHeader
         icon={MessagesSquare}
-        title={tr("Diskusi yang tumbuh bersama bukti", "Discussions that grow with evidence")}
+        title={tr("Ruang diskusi termoderasi", "Moderated discussion room")}
         description={tr(
           "Tanyakan hal yang belum jelas, bagikan pengalaman, dan hubungkan diskusi dengan hasil verifikasi pakar. Semua komentar melewati moderasi.",
           "Ask what is still unclear, share experiences, and connect discussions with expert verification. Every comment passes moderation.",
@@ -77,12 +80,12 @@ export function ForumList() {
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
             <Input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => { setQuery(event.target.value); setPage(1); }}
               placeholder={tr("Cari diskusi...", "Search discussions...")}
               className="pl-11"
               aria-label={tr("Cari thread", "Search threads")}
@@ -90,7 +93,7 @@ export function ForumList() {
           </div>
           <Select
             value={category}
-            onChange={(event) => setCategory(event.target.value)}
+            onChange={(event) => { setCategory(event.target.value); setPage(1); }}
             aria-label={tr("Filter kategori", "Filter category")}
             className="md:w-56"
           >
@@ -103,7 +106,7 @@ export function ForumList() {
           </Select>
           <Select
             value={sort}
-            onChange={(event) => setSort(event.target.value)}
+            onChange={(event) => { setSort(event.target.value); setPage(1); }}
             aria-label={tr("Urutkan", "Sort")}
             className="md:w-40"
           >
@@ -124,8 +127,9 @@ export function ForumList() {
       </div>
 
       {visible.length > 0 ? (
+        <>
         <div className="space-y-3">
-          {visible.map((thread) => {
+          {pageSlice.map((thread) => {
             const visibleComments = thread.comments.filter((comment) => comment.status === "visible");
             return (
               <article
@@ -179,6 +183,8 @@ export function ForumList() {
             );
           })}
         </div>
+        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
+        </>
       ) : isFiltered ? (
         <EmptyState
           icon={hasQuery ? SearchX : FilterX}
@@ -194,7 +200,7 @@ export function ForumList() {
           )}
           action={
             <div className="flex gap-2">
-              <Button variant="cozySoft" onClick={() => { setQuery(""); setCategory("all"); }}>
+              <Button variant="cozySoft" onClick={() => { setQuery(""); setCategory("all");; setPage(1) }}>
                 {tr("Hapus filter", "Clear filters")}
               </Button>
               <NewThreadDialog className={cn(buttonVariants({ variant: "cozy" }))}>

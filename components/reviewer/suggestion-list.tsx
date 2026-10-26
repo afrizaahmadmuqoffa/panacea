@@ -21,6 +21,7 @@ import { buttonVariants, Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { formatDate } from "@/lib/i18n/format";
 import { categoryName } from "@/lib/data/categories";
@@ -67,6 +68,8 @@ export function SuggestionList({
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || status !== "all" || kind !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   const pendingCount = suggestions.filter((suggestion) => suggestion.status === "pending").length;
 
@@ -89,25 +92,25 @@ export function SuggestionList({
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
             <Input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => { setQuery(event.target.value); setPage(1); }}
               placeholder={tr("Cari judul atau catatan...", "Search title or note...")}
               className="pl-11"
               aria-label={tr("Cari saran", "Search suggestions")}
             />
           </div>
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-44">
+          <Select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-44">
             <option value="all">{tr("Semua status", "All statuses")}</option>
             <option value="pending">{tr("Menunggu", "Pending")}</option>
             <option value="approved">{tr("Disetujui", "Approved")}</option>
             <option value="rejected">{tr("Ditolak", "Rejected")}</option>
             <option value="needs_changes">{tr("Perlu perubahan", "Needs changes")}</option>
           </Select>
-          <Select value={kind} onChange={(event) => setKind(event.target.value)} aria-label={tr("Filter jenis", "Filter type")} className="md:w-48">
+          <Select value={kind} onChange={(event) => { setKind(event.target.value); setPage(1); }} aria-label={tr("Filter jenis", "Filter type")} className="md:w-48">
             <option value="all">{tr("Semua jenis", "All types")}</option>
             <option value="new_source">{tr("Sumber baru", "New source")}</option>
             <option value="chunk_addition">{tr("Tambahan chunk", "Chunk addition")}</option>
@@ -140,7 +143,7 @@ export function SuggestionList({
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((suggestion) => {
+                  {pageSlice.map((suggestion) => {
                     const kindLabel: SuggestionKind = suggestion.targetSourceId
                       ? "chunk_addition"
                       : "new_source";
@@ -206,7 +209,7 @@ export function SuggestionList({
           </div>
 
           <div className="grid gap-3 lg:hidden">
-            {visible.map((suggestion) => (
+            {pageSlice.map((suggestion) => (
               <article key={suggestion.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -262,6 +265,7 @@ export function SuggestionList({
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -269,7 +273,7 @@ export function SuggestionList({
           state="filtered"
           title={tr("Belum ada saran yang cocok", "No matching suggestions")}
           description={tr("Ubah kata kunci atau filter untuk melihat saran lain.", "Change the keyword or filters to see other suggestions.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setStatus("all"); setKind("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setStatus("all"); setKind("all");; setPage(1) }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState

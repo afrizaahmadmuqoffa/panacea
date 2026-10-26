@@ -60,10 +60,10 @@ export function ServiceStatus({ initial }: { initial: SystemService[] }) {
       </div>
       <ul className="grid gap-2.5 p-5 sm:grid-cols-3">
         {services.map((service) => (
-          <li key={service.name} className={cn("rounded-md border p-3", tone[service.status])}>
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-extrabold">{service.name}</p>
-              <span className="text-xs font-extrabold uppercase tracking-[0.1em]">
+          <li key={service.name} className={cn("min-w-0 rounded-md border p-3", tone[service.status])}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="min-w-0 break-words text-xs font-extrabold">{service.name}</p>
+              <span className="shrink-0 text-xs font-extrabold uppercase tracking-[0.1em]">
                 {service.status === "healthy"
                   ? tr("Sehat", "Healthy")
                   : service.status === "degraded"
@@ -71,8 +71,8 @@ export function ServiceStatus({ initial }: { initial: SystemService[] }) {
                     : tr("Perlu perhatian", "Needs attention")}
               </span>
             </div>
-            <div className="mt-1 flex items-center justify-between gap-2 text-xs">
-              <span className="line-clamp-2">{service.detail[locale]}</span>
+            <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span className="min-w-0 break-words">{service.detail[locale]}</span>
               <span className="shrink-0 font-bold">{service.latency}</span>
             </div>
           </li>

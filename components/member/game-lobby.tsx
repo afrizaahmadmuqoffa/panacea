@@ -29,10 +29,10 @@ export function GameLobby() {
       <MemberHero
         kicker={tr("Debunk game", "Debunk game")}
         kickerIcon={Gamepad2}
-        title={tr("Geser, pikir, tumbuh.", "Swipe, think, grow.")}
+        title={tr("Latih literasimu dengan main game", "Train your literacy skills by playing games")}
         description={tr(
-          "Soal baru selalu didahulukan. Salah menjawab berarti soal itu muncul lagi besok; benar berarti soal baru muncul dalam 30 hari.",
-          "New statements always come first. A wrong answer brings the statement back tomorrow; a correct one hides it for 30 days.",
+          "Sebuah permainan dimana kamu tinggal geser kanan untuk jawab fakta dan geser kiri untuk jawab hoaks.",
+          "A game where you simply swipe right to identify a fact and swipe left to identify a hoax.",
         )}
         mascot="game"
         actions={

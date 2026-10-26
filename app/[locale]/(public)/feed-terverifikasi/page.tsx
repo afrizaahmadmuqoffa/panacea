@@ -72,13 +72,17 @@ export default async function FeedPage({ params }: { params: Promise<{ locale: L
               </span>
             </p>
           </div>
-          <div className="intro-illustration" aria-hidden="true">
+          <div className="intro-illustration hidden sm:block" aria-hidden="true">
             <span className="intro-glow" />
             <span className="intro-glow intro-glow-b" />
             <span className="intro-orbit intro-orbit-a" />
             <span className="intro-orbit intro-orbit-b" />
             <span className="intro-cloud intro-cloud-a" />
             <span className="intro-cloud intro-cloud-b" />
+            <span className="intro-particle" />
+            <span className="intro-particle" />
+            <span className="intro-particle" />
+            <span className="intro-particle" />
             <span className="intro-particle" />
             <span className="intro-particle" />
             <span className="intro-particle" />

@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MemberPageHeader } from "./member-page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatRelative } from "@/lib/i18n/format";
 import type { Notification } from "@/lib/types";
@@ -72,6 +73,9 @@ export function NotificationCenter() {
     [scope, notifications, unread],
   );
 
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
+
   if (!hydrated) return <NotificationSkeleton />;
 
   return (
@@ -92,7 +96,7 @@ export function NotificationCenter() {
       />
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Tabs value={scope} onValueChange={(v) => setScope(v as "all" | "unread")} variant="cozy">
+        <Tabs value={scope} onValueChange={(v) => { setScope(v as "all" | "unread"); setPage(1); }} variant="cozy">
           <TabsList>
             <TabsTrigger value="all">
               {tr("Semua", "All")}
@@ -113,7 +117,7 @@ export function NotificationCenter() {
         <TabsContent value={scope}>
           {visible.length > 0 ? (
             <ul className="space-y-2.5">
-              {visible.map((notification) => (
+              {pageSlice.map((notification) => (
                 <NotificationRow
                   key={notification.id}
                   notification={notification}
@@ -137,13 +141,14 @@ export function NotificationCenter() {
               )}
               action={
                 scope === "unread" ? (
-                  <Button variant="cozySoft" onClick={() => setScope("all")}>
+                  <Button variant="cozySoft" onClick={() => { setScope("all"); setPage(1); }}>
                     {tr("Lihat semua notifikasi", "View all notifications")}
                   </Button>
                 ) : undefined
               }
             />
           )}
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </TabsContent>
       </Tabs>
 

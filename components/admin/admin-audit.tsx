@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { formatDate } from "@/lib/i18n/format";
 import type { AuditLog } from "@/lib/types";
@@ -35,6 +36,9 @@ export function AdminAudit({ logs }: { logs: AuditLog[] }) {
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || action !== "all";
 
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -51,9 +55,9 @@ export function AdminAudit({ logs }: { logs: AuditLog[] }) {
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <div className="relative">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari aktor, aksi, target, atau request ID...", "Search actor, action, target, or request ID...")} className="pl-11" aria-label={tr("Cari audit", "Search audit")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari aktor, aksi, target, atau request ID...", "Search actor, action, target, or request ID...")} className="pl-11" aria-label={tr("Cari audit", "Search audit")} />
           </div>
-          <Select value={action} onChange={(event) => setAction(event.target.value)} aria-label={tr("Filter aksi", "Filter action")} className="md:w-64">
+          <Select value={action} onChange={(event) => { setAction(event.target.value); setPage(1); }} aria-label={tr("Filter aksi", "Filter action")} className="md:w-64">
             <option value="all">{tr("Semua aksi", "All actions")}</option>
             {actions.map((item) => <option key={item} value={item}>{item}</option>)}
           </Select>
@@ -78,7 +82,7 @@ export function AdminAudit({ logs }: { logs: AuditLog[] }) {
               </TR>
             </THead>
             <TBody>
-              {visible.map((log) => (
+              {pageSlice.map((log) => (
                 <TR key={log.id}>
                   <TD className="whitespace-nowrap text-xs">{formatDate(log.createdAt, locale, true)}</TD>
                   <TD className="text-xs font-bold text-bark-900">{log.actor}</TD>
@@ -96,7 +100,7 @@ export function AdminAudit({ logs }: { logs: AuditLog[] }) {
           state="filtered"
           title={tr("Tidak ada event audit", "No audit events")}
           description={tr("Ubah kata kunci atau filter aksi.", "Adjust the keyword or action filter.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setAction("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setAction("all"); setPage(1); }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState
@@ -106,6 +110,8 @@ export function AdminAudit({ logs }: { logs: AuditLog[] }) {
           description={tr("Perubahan penting pada sistem akan tercatat di sini.", "Important system changes will be recorded here.")}
         />
       )}
+
+      <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
 
       <div className="rounded-lg border border-cream-200 bg-cream-100 p-4 text-xs leading-relaxed text-bark-700">
         {tr(

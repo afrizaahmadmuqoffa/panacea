@@ -18,6 +18,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { StatusBadge } from "@/components/panacea/status-badge";
 import { IngestJobPanel, IngestStatusMark } from "@/components/admin/ingest-jobs";
@@ -43,6 +44,8 @@ export function AdminKnowledgeBase({ sources, categories }: { sources: KBSource[
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || status !== "all" || type !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   return (
     <div className="space-y-6">
@@ -62,19 +65,19 @@ export function AdminKnowledgeBase({ sources, categories }: { sources: KBSource[
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari judul atau penulis...", "Search title or author...")} className="pl-11" aria-label={tr("Cari sumber KB", "Search KB sources")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari judul atau penulis...", "Search title or author...")} className="pl-11" aria-label={tr("Cari sumber KB", "Search KB sources")} />
           </div>
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-44">
+          <Select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-44">
             <option value="all">{tr("Semua status", "All statuses")}</option>
             <option value="draft">{tr("Draft", "Draft")}</option>
             <option value="chunked">{tr("Sudah dipecah", "Chunked")}</option>
             <option value="ingested">{tr("Ter-ingest", "Ingested")}</option>
             <option value="failed">{tr("Gagal", "Failed")}</option>
           </Select>
-          <Select value={type} onChange={(event) => setType(event.target.value)} aria-label={tr("Filter jenis", "Filter type")} className="md:w-40">
+          <Select value={type} onChange={(event) => { setType(event.target.value); setPage(1); }} aria-label={tr("Filter jenis", "Filter type")} className="md:w-40">
             <option value="all">{tr("Semua jenis", "All types")}</option>
             <option value="article">{tr("Artikel", "Article")}</option>
             <option value="document">{tr("Dokumen", "Document")}</option>
@@ -107,7 +110,7 @@ export function AdminKnowledgeBase({ sources, categories }: { sources: KBSource[
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((source) => (
+                  {pageSlice.map((source) => (
                     <TR key={source.id}>
                       <TD>
                         <div className="flex items-start gap-2.5">
@@ -146,7 +149,7 @@ export function AdminKnowledgeBase({ sources, categories }: { sources: KBSource[
           </div>
 
           <div className="grid gap-3 lg:hidden">
-            {visible.map((source) => (
+            {pageSlice.map((source) => (
               <article key={source.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -176,6 +179,7 @@ export function AdminKnowledgeBase({ sources, categories }: { sources: KBSource[
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -183,7 +187,7 @@ export function AdminKnowledgeBase({ sources, categories }: { sources: KBSource[
           state="filtered"
           title={tr("Sumber tidak ditemukan", "No sources found")}
           description={tr("Ubah filter untuk melihat sumber lain.", "Adjust the filters to see other sources.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setStatus("all"); setType("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setStatus("all"); setType("all");; setPage(1) }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState

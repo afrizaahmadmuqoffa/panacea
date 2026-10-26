@@ -4,6 +4,7 @@ import { ArrowUpRight, Eye, EyeOff, LoaderCircle, Mail, Lock } from "lucide-reac
 import { useActionState, useState } from "react";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { loginAction } from "@/lib/actions/auth";
+import { DemoAccountsButton } from "./demo-accounts-dialog";
 
 const labelClass = "text-[11px] font-extrabold text-[#506451] mb-[7px]";
 const inputWrapClass =
@@ -89,6 +90,8 @@ export function LoginForm() {
           <ArrowUpRight size={16} aria-hidden="true" />
         )}
       </button>
+
+      <DemoAccountsButton />
     </form>
   );
 }

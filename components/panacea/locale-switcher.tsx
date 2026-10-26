@@ -1,22 +1,14 @@
 "use client";
 
 import { Languages } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useI18n } from "@/components/providers/i18n-provider";
+import { useI18n, useLocaleSwitch } from "@/components/providers/i18n-provider";
 import { Select } from "@/components/ui/input";
-import { locales } from "@/lib/i18n/config";
+import { locales, type Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 export function LocaleSwitcher({ className }: { className?: string }) {
   const { locale, tr } = useI18n();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  function switchLocale(next: string) {
-    const segments = pathname.split("/");
-    segments[1] = next;
-    router.push(`${segments.join("/") || `/${next}`}${window.location.hash}`);
-  }
+  const switchLocale = useLocaleSwitch();
 
   return (
     <div className={cn("relative inline-flex items-center", className)}>
@@ -26,7 +18,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
       />
       <Select
         value={locale}
-        onChange={(event) => switchLocale(event.target.value)}
+        onChange={(event) => switchLocale(event.target.value as Locale)}
         aria-label={tr("Pilih bahasa", "Choose language")}
         className="h-11 w-auto min-w-20 pl-9 text-xs font-extrabold uppercase tracking-wide"
       >

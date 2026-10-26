@@ -25,6 +25,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { StatusBadge } from "@/components/panacea/status-badge";
 import { VerdictBadge } from "@/components/panacea/verdict-badge";
@@ -55,6 +56,8 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || verdict !== "all" || status !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   function openEdit(item: FeedItem) {
     setEditing(item);
@@ -139,19 +142,19 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari konten feed...", "Search feed content...")} className="pl-11" aria-label={tr("Cari feed", "Search feed")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari konten feed...", "Search feed content...")} className="pl-11" aria-label={tr("Cari feed", "Search feed")} />
           </div>
-          <Select value={verdict} onChange={(event) => setVerdict(event.target.value)} aria-label={tr("Filter verdict", "Filter verdict")} className="md:w-48">
+          <Select value={verdict} onChange={(event) => { setVerdict(event.target.value); setPage(1); }} aria-label={tr("Filter verdict", "Filter verdict")} className="md:w-48">
             <option value="all">{tr("Semua verdict", "All verdicts")}</option>
             <option value="supported">{tr("Didukung", "Supported")}</option>
             <option value="partly_supported">{tr("Sebagian", "Partly")}</option>
             <option value="contradicted">{tr("Bertentangan", "Contradicted")}</option>
             <option value="insufficient_evidence">{tr("Bukti belum cukup", "Insufficient")}</option>
           </Select>
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-40">
+          <Select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-40">
             <option value="all">{tr("Semua status", "All statuses")}</option>
             <option value="visible">{tr("Tampil", "Visible")}</option>
             <option value="hidden">{tr("Disembunyikan", "Hidden")}</option>
@@ -177,7 +180,7 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((item) => (
+                  {pageSlice.map((item) => (
                     <TR key={item.id}>
                       <TD className="max-w-sm"><p className="line-clamp-2 text-xs font-bold text-bark-900">{item.title[locale]}</p><p className="mt-0.5 text-xs text-bark-500">{item.slug}</p></TD>
                       <TD><VerdictBadge verdict={item.verdict} size="sm" /></TD>
@@ -200,7 +203,7 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
             </TableWrap>
           </div>
           <div className="grid gap-3 lg:hidden">
-            {visible.map((item) => (
+            {pageSlice.map((item) => (
               <article key={item.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex flex-wrap items-center gap-2">
                   <VerdictBadge verdict={item.verdict} size="sm" />
@@ -215,6 +218,7 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -222,7 +226,7 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
           state="filtered"
           title={tr("Tidak ada konten feed", "No feed content")}
           description={tr("Ubah filter pencarian.", "Adjust the search filters.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setVerdict("all"); setStatus("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setVerdict("all"); setStatus("all");; setPage(1) }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState
@@ -274,7 +278,7 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
             <Textarea id="feed-limitations" value={form.limitationsId} onChange={(event) => setForm((current) => ({ ...current, limitationsId: event.target.value }))} className="min-h-20" />
           </Field>
           <Field label={tr("Catatan revisi", "Revision note")} htmlFor="feed-revision-note" required>
-            <Textarea id="feed-revision-note" value={revisionNote} onChange={(event) => setRevisionNote(event.target.value)} placeholder={tr("Alasan perubahan ini...", "Why this change was made...")} className="min-h-20" />
+            <Textarea id="feed-revision-note" value={revisionNote} onChange={(event) => { setRevisionNote(event.target.value); setPage(1); }} placeholder={tr("Alasan perubahan ini...", "Why this change was made...")} className="min-h-20" />
           </Field>
         </div>
       </Dialog>
@@ -300,7 +304,7 @@ export function AdminFeed({ items }: { items: FeedItem[] }) {
         <div className="space-y-3">
           {confirm ? <p className="rounded-md bg-[#fff7de] p-3 text-xs font-semibold text-bark-700">{confirm.title[locale]}</p> : null}
           <Field label={tr("Alasan perubahan", "Reason for change")} htmlFor="feed-visibility-note" required>
-            <Textarea id="feed-visibility-note" value={revisionNote} onChange={(event) => setRevisionNote(event.target.value)} className="min-h-20" />
+            <Textarea id="feed-visibility-note" value={revisionNote} onChange={(event) => { setRevisionNote(event.target.value); setPage(1); }} className="min-h-20" />
           </Field>
         </div>
       </Dialog>

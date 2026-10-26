@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import {
@@ -9,8 +9,8 @@ import {
   CheckCircle2,
   Flame,
   SearchCheck,
-  Sprout,
   Trophy,
+  User,
 } from "lucide-react";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { usePanacea } from "@/components/providers/panacea-provider";
@@ -52,7 +52,7 @@ export function DashboardHome() {
     <div className="space-y-6">
       <MemberHero
         kicker={tr("Ruang anggota", "Member space")}
-        kickerIcon={Sprout}
+        kickerIcon={User}
         title={tr(`Halo, ${profile.fullName.split(" ")[0]}.`, `Hi, ${profile.fullName.split(" ")[0]}.`)}
         description={tr(
           "Klaim terbaru, progres belajar, dan notifikasi penting ada di satu tempat. Mulai dari satu pertanyaan.",
@@ -166,7 +166,7 @@ export function DashboardHome() {
             ) : null}
 
             {upcomingBadges.length > 0 ? (
-              <div className="mt-4 flex flex-1 flex-col justify-between gap-3">
+              <div className="mt-4 flex flex-col gap-3">
                 {upcomingBadges.map((badge) => (
                   <div key={badge.code} className="flex items-start gap-2.5">
                     <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full border border-cream-200 bg-cream-100 text-bark-500">
@@ -193,7 +193,7 @@ export function DashboardHome() {
                 ))}
               </div>
             ) : (
-              <div className="mt-4 flex flex-1 flex-col justify-between gap-3">
+              <div className="mt-4 flex flex-col gap-3">
                 <p className="text-xs font-extrabold text-bark-900">
                   {tr("Semua badge sudah terbuka.", "Every badge is unlocked.")}
                 </p>

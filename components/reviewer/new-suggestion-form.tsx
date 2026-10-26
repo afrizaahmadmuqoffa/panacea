@@ -162,7 +162,7 @@ export function NewSuggestionForm({
     <form onSubmit={submit} className="space-y-5" noValidate>
       {error ? <Alert variant="danger">{error}</Alert> : null}
 
-        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-5 cozy-shadow cozy-hover hover:border-sage-300">
+        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-5 sm:p-6">
           <h2 className="font-heading text-base font-extrabold text-bark-900">{tr("Detail saran", "Suggestion details")}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label={tr("Jenis saran", "Suggestion type")} htmlFor="suggestion-type">
@@ -212,7 +212,7 @@ export function NewSuggestionForm({
           </div>
         </section>
 
-        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-5 cozy-shadow cozy-hover hover:border-sage-300">
+        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-5 sm:p-6">
           <div className="flex items-center gap-2">
             <span className="grid size-9 place-items-center rounded-md bg-sage-100 text-sage-700">
               <FileText className="size-4" aria-hidden="true" />
@@ -272,13 +272,10 @@ export function NewSuggestionForm({
           )}
         </section>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-cream-200 bg-cream-100 p-4">
-          <p className="max-w-md text-xs leading-relaxed text-bark-700">
-            {tr(
-              "Saran tidak masuk KB sebelum admin menyetujui dan melakukan ingest.",
-              "A suggestion does not enter the KB until an admin approves and ingests it.",
-            )}
-          </p>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button type="button" variant="secondary" onClick={() => onDone?.()} disabled={loading}>
+            {tr("Batal", "Cancel")}
+          </Button>
           <Button type="submit" disabled={loading}>
             {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Scissors className="size-4" aria-hidden="true" />}
             {loading ? tr("Mengirim...", "Sending...") : tr("Kirim & Pecah", "Send & Split")}

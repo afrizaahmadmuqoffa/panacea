@@ -21,6 +21,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input, Select } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { StatusBadge } from "@/components/panacea/status-badge";
 import { VerdictBadge } from "@/components/panacea/verdict-badge";
@@ -57,6 +58,8 @@ export function AdminClaims({
 
   const hasQuery = query.trim().length > 0;
   const isFiltered = hasQuery || status !== "all" || category !== "all";
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   async function confirmReassign() {
     if (!reassign || !reviewer) return;
@@ -89,12 +92,12 @@ export function AdminClaims({
       />
 
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-[1fr_auto_auto]">
+          <div className="relative col-span-2 md:col-span-1">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari klaim atau ID...", "Search claim or ID...")} className="pl-11" aria-label={tr("Cari klaim", "Search claims")} />
+            <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari klaim atau ID...", "Search claim or ID...")} className="pl-11" aria-label={tr("Cari klaim", "Search claims")} />
           </div>
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} aria-label={tr("Filter status", "Filter status")} className="md:w-48">
+          <Select value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} aria-label={tr("Filter status", "Filter status")} className="md:w-48">
             <option value="all">{tr("Semua status", "All statuses")}</option>
             <option value="analyzing">{tr("Sedang dianalisis", "Analyzing")}</option>
             <option value="analyzed">{tr("Analisis selesai", "Analyzed")}</option>
@@ -102,7 +105,7 @@ export function AdminClaims({
             <option value="finalized">{tr("Final", "Finalized")}</option>
             <option value="analysis_failed">{tr("Analisis gagal", "Failed")}</option>
           </Select>
-          <Select value={category} onChange={(event) => setCategory(event.target.value)} aria-label={tr("Filter kategori", "Filter category")} className="md:w-56">
+          <Select value={category} onChange={(event) => { setCategory(event.target.value); setPage(1); }} aria-label={tr("Filter kategori", "Filter category")} className="md:w-56">
             <option value="all">{tr("Semua kategori", "All categories")}</option>
             {categories.map((item) => (
               <option key={item.slug} value={item.slug}>{item.name[locale]}</option>
@@ -134,7 +137,7 @@ export function AdminClaims({
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((claim) => (
+                  {pageSlice.map((claim) => (
                     <TR key={claim.id}>
                       <TD><span className="font-mono text-xs text-bark-500">{claim.id}</span></TD>
                       <TD className="max-w-xs"><p className="line-clamp-2 text-xs font-bold text-bark-900">{claim.originalText}</p></TD>
@@ -157,7 +160,7 @@ export function AdminClaims({
           </div>
 
           <div className="grid gap-3 xl:hidden">
-            {visible.map((claim) => (
+            {pageSlice.map((claim) => (
               <article key={claim.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex flex-wrap items-center gap-2">
                   <StatusBadge status={claim.status} />
@@ -173,6 +176,7 @@ export function AdminClaims({
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : isFiltered ? (
         <EmptyState
@@ -180,7 +184,7 @@ export function AdminClaims({
           state="filtered"
           title={tr("Tidak ada klaim yang cocok", "No matching claims")}
           description={tr("Ubah kata kunci atau filter untuk melihat klaim lain.", "Change the keyword or filters to see other claims.")}
-          action={<Button variant="secondary" onClick={() => { setQuery(""); setStatus("all"); setCategory("all"); }}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setStatus("all"); setCategory("all");; setPage(1) }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState
@@ -241,7 +245,7 @@ export function AdminClaims({
       >
         <div className="space-y-3">
           <label htmlFor="reassign-reviewer" className="text-[13px] font-bold text-bark-700">{tr("Reviewer", "Reviewer")}</label>
-          <Select id="reassign-reviewer" value={reviewer} onChange={(event) => setReviewer(event.target.value)}>
+          <Select id="reassign-reviewer" value={reviewer} onChange={(event) => { setReviewer(event.target.value); setPage(1); }}>
             {reviewers.map((profile) => (
               <option key={profile.id} value={profile.id}>{profile.fullName} · {profile.categorySlugs.map((slug) => categoryName(slug, locale)).join(", ")}</option>
             ))}

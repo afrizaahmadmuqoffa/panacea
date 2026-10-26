@@ -84,13 +84,13 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
 
       <ServiceStatus initial={data.services} />
 
-      <div className="grid gap-5 lg:grid-cols-2 lg:auto-rows-fr">
-        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
+      <div className="grid gap-5 lg:auto-rows-fr lg:grid-cols-2">
+        <section className="min-w-0 rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
           <div className="flex items-center justify-between gap-3 border-b border-[#e8e2d5] px-5 py-3.5">
-            <h2 className="font-heading text-base font-extrabold text-bark-900">
+            <h2 className="min-w-0 font-heading text-base font-extrabold text-bark-900">
               {tr("Klaim terbaru", "Latest claims")}
             </h2>
-            <Link href={`/${locale}/admin/klaim`} className="text-xs font-bold text-sage-700 hover:underline">
+            <Link href={`/${locale}/admin/klaim`} className="shrink-0 text-xs font-bold text-sage-700 hover:underline">
               {tr("Semua klaim", "All claims")}
             </Link>
           </div>
@@ -121,12 +121,12 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
           </ul>
         </section>
 
-        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
+        <section className="min-w-0 rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
           <div className="flex items-center justify-between gap-3 border-b border-[#e8e2d5] px-5 py-3.5">
-            <h2 className="font-heading text-base font-extrabold text-bark-900">
+            <h2 className="min-w-0 font-heading text-base font-extrabold text-bark-900">
               {tr("Feed terverifikasi terbaru", "Latest verified feed")}
             </h2>
-            <Link href={`/${locale}/admin/feed`} className="text-xs font-bold text-sage-700 hover:underline">
+            <Link href={`/${locale}/admin/feed`} className="shrink-0 text-xs font-bold text-sage-700 hover:underline">
               {tr("Kelola feed", "Manage feed")}
             </Link>
           </div>
@@ -153,12 +153,12 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
           </ul>
         </section>
 
-        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
+        <section className="min-w-0 rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
           <div className="flex items-center justify-between gap-3 border-b border-[#e8e2d5] px-5 py-3.5">
-            <h2 className="font-heading text-base font-extrabold text-bark-900">
+            <h2 className="min-w-0 font-heading text-base font-extrabold text-bark-900">
               {tr("Saran knowledge base terbaru", "Latest KB suggestions")}
             </h2>
-            <Link href={`/${locale}/admin/saran-kb`} className="text-xs font-bold text-sage-700 hover:underline">
+            <Link href={`/${locale}/admin/saran-kb`} className="shrink-0 text-xs font-bold text-sage-700 hover:underline">
               {tr("Semua saran", "All suggestions")}
             </Link>
           </div>
@@ -185,14 +185,14 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
           </ul>
         </section>
 
-        <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
+        <section className="min-w-0 rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
           <div className="flex items-center justify-between gap-3 border-b border-[#e8e2d5] px-5 py-3.5">
-            <h2 className="font-heading text-base font-extrabold text-bark-900">
+            <h2 className="min-w-0 font-heading text-base font-extrabold text-bark-900">
               {tr("Moderasi forum terbaru", "Latest forum moderation")}
             </h2>
             <Link
               href={`/${locale}/admin/forum-moderasi`}
-              className="text-xs font-bold text-sage-700 hover:underline"
+              className="shrink-0 text-xs font-bold text-sage-700 hover:underline"
             >
               {tr("Buka moderasi", "Open moderation")}
             </Link>
@@ -223,10 +223,10 @@ export default async function AdminDashboardPage({ params }: { params: Promise<{
         </section>
       </div>
 
-      <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
+      <section className="min-w-0 rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover hover:border-sage-300">
         <div className="flex items-center justify-between gap-3 border-b border-[#e8e2d5] px-5 py-3.5">
           <div>
-            <h2 className="font-heading text-base font-extrabold text-bark-900">
+            <h2 className="min-w-0 font-heading text-base font-extrabold text-bark-900">
               {tr("Audit terbaru", "Recent audit")}
             </h2>
             <p className="mt-0.5 text-xs text-bark-500">

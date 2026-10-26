@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/panacea/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { categoryName } from "@/lib/data/categories";
 import { formatDate } from "@/lib/i18n/format";
 import type { KBSource } from "@/lib/types";
@@ -15,6 +16,7 @@ import type { KBSource } from "@/lib/types";
 export function ReviewerKnowledgeBaseDetail({ source }: { source?: KBSource }) {
   const { locale, tr } = useI18n();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const { page, setPage, pageCount, start, end } = usePagination(source?.chunks.length ?? 0);
 
   if (!source) {
     return (
@@ -88,7 +90,7 @@ export function ReviewerKnowledgeBaseDetail({ source }: { source?: KBSource }) {
                 {tr("Sumber ini belum memiliki chunk.", "This source has no chunks yet.")}
               </p>
             ) : null}
-            {source.chunks.map((chunk) => (
+            {source.chunks.slice(start, end).map((chunk) => (
               <article key={chunk.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="grid size-7 place-items-center rounded-full bg-cream-100 text-xs font-extrabold text-bark-700">
@@ -128,6 +130,7 @@ export function ReviewerKnowledgeBaseDetail({ source }: { source?: KBSource }) {
                 </p>
               </article>
             ))}
+            <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
           </div>
         </section>
 

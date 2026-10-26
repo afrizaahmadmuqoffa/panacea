@@ -5,7 +5,6 @@ import {
   ArrowUp,
   Crown,
   Flame,
-  Info,
   Medal,
   Minus,
   Trophy,
@@ -19,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { LeaderboardEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { MemberHero } from "./member-hero";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 
 export function LeaderboardView({
   weekly,
@@ -35,7 +35,7 @@ export function LeaderboardView({
       <MemberHero
         kicker={tr("Papan peringkat", "Leaderboard")}
         kickerIcon={Trophy}
-        title={tr("Tumbuh bersama, bukan berlomba sendiri.", "Grow together, not just compete.")}
+        title={tr("Papan peringkat Debunk Game.", "Debunk Game Leaderboard")}
         description={tr(
           "Peringkat mingguan direset Senin 00.00 WIB. Global menyimpan total poin.",
           "Weekly rankings reset Monday 00:00 WIB. Global keeps all-time points.",
@@ -74,19 +74,6 @@ export function LeaderboardView({
           )}
         </TabsContent>
       </Tabs>
-
-      <div className="flex gap-2.5 rounded-[18px] border border-sage-300 bg-sage-100/80 p-4 text-xs leading-relaxed text-bark-700 cozy-shadow-sage">
-        <Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-        <div>
-          <p className="font-bold">{tr("Privasi nama", "Name privacy")}</p>
-          <p className="mt-0.5">
-            {tr(
-              "Nama ditampilkan dalam bentuk singkat kecuali pengguna memilih nama publik penuh di profil. Pengguna yang tidak aktif 180 hari dapat ditandai abu-abu.",
-              "Names appear in short form unless a user chooses a full public name in their profile. Users inactive for 180 days may be shown in grey.",
-            )}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
@@ -95,9 +82,12 @@ function LeaderboardBoard({ entries, label }: { entries: LeaderboardEntry[]; lab
   const { locale, tr } = useI18n();
   const top = entries.slice(0, 3);
   const rest = entries.slice(3);
+  const { page, setPage, pageCount, start, end } = usePagination(rest.length);
+  const pageSlice = rest.slice(start, end);
   const podiumOrder = [top[1], top[0], top[2]].filter(Boolean);
   const heights = ["h-32", "h-44", "h-24"];
-  const medals = [Medal, Crown, Medal];
+  const medals = [Medal, Medal, Medal];
+  const hasFullPodium = podiumOrder.length >= 3;
 
   return (
     <div className="space-y-5">
@@ -109,14 +99,14 @@ function LeaderboardBoard({ entries, label }: { entries: LeaderboardEntry[]; lab
             Top 3
           </Badge>
         </div>
-        <div className="mt-5 grid grid-cols-3 items-end gap-2 sm:gap-4">
+        <div className={cn("mt-5 items-end gap-2 sm:gap-4", hasFullPodium ? "grid grid-cols-3" : "flex justify-center gap-6")}>
           {podiumOrder.map((entry) => {
             const position = entry.rank;
             const orderIndex = [1, 0, 2].indexOf(position - 1);
             const Icon = medals[position - 1] ?? Medal;
             const isFirst = position === 1;
             return (
-              <div key={entry.alias} className="flex flex-col items-center">
+              <div key={entry.alias} className={cn("flex flex-col items-center", !hasFullPodium && "w-[38%] max-w-[180px]")}>
                 <div className="relative">
                   <Avatar name={entry.alias} size={isFirst ? "lg" : "md"} tone="warm" className={cn(isFirst && "ring-4 ring-butter-300")} />
                   {isFirst ? (
@@ -149,7 +139,7 @@ function LeaderboardBoard({ entries, label }: { entries: LeaderboardEntry[]; lab
           <span className="text-xs font-semibold text-bark-500">{entries.length} {tr("anggota", "members")}</span>
         </div>
         <ul className="divide-y divide-[#e8e2d5]">
-          {rest.map((entry) => (
+          {pageSlice.map((entry) => (
             <li
               key={entry.alias}
               className={cn(
@@ -190,6 +180,7 @@ function LeaderboardBoard({ entries, label }: { entries: LeaderboardEntry[]; lab
             </li>
           ))}
         </ul>
+        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
       </div>
     </div>
   );

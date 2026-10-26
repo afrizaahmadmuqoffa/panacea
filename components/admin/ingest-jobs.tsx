@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { useI18n } from "@/components/providers/i18n-provider";
 import { formatDate } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
@@ -127,7 +128,9 @@ export function IngestJobPanel({ sources }: { sources: KBSource[] }) {
   const percent = total ? Math.round((ingested / total) * 100) : 0;
   const recentJobs = [...jobs]
     .sort((left, right) => new Date(right.job.updatedAt).getTime() - new Date(left.job.updatedAt).getTime())
-    .slice(0, 6);
+    .slice(0, 60);
+
+  const pager = usePagination(recentJobs.length);
 
   return (
     <section className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-5 cozy-shadow cozy-hover hover:border-sage-300">
@@ -169,8 +172,9 @@ export function IngestJobPanel({ sources }: { sources: KBSource[] }) {
       </div>
 
       {recentJobs.length > 0 ? (
+        <>
         <ul className="mt-4 divide-y divide-[#e8e2d5] border-t border-cream-200">
-          {recentJobs.map(({ source, job }) => (
+          {recentJobs.slice(pager.start, pager.end).map(({ source, job }) => (
             <li key={job.id} className="py-3">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -197,6 +201,8 @@ export function IngestJobPanel({ sources }: { sources: KBSource[] }) {
             </li>
           ))}
         </ul>
+        <Pagination page={pager.page} pageCount={pager.pageCount} onPageChange={pager.setPage} />
+        </>
       ) : (
         <p className="mt-4 rounded-md border border-cream-200 bg-cream-100 px-3 py-2 text-xs leading-relaxed text-bark-500">
           {tr("Belum ada job ingest.", "No ingest jobs yet.")}

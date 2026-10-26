@@ -30,13 +30,13 @@ export function StatTile({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-[22px] border-[#eae5d9] bg-[#fffdf8] p-5 cozy-shadow",
+        "group relative overflow-hidden rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-5 cozy-shadow",
         interactive && "cozy-hover hover:border-sage-300",
         className,
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[13px] font-bold text-bark-700">{label}</p>
+        <p className="min-w-0 break-words text-[13px] font-bold text-bark-700">{label}</p>
         <span
           className={cn(
             "grid size-9 place-items-center rounded-md",
@@ -49,8 +49,8 @@ export function StatTile({
       </div>
       <p
         className={cn(
-          "mt-3 font-heading text-3xl font-black tracking-[-0.6px] text-bark-900 [font-variant-numeric:tabular-nums]",
-          cozy && "mt-2.5 text-[2rem] font-black",
+          "mt-3 break-words font-heading text-[1.75rem] font-black tracking-[-0.6px] text-bark-900 [font-variant-numeric:tabular-nums] sm:text-3xl",
+          cozy && "mt-2.5 text-[1.75rem] font-black sm:text-[2rem]",
         )}
       >
         {value}

@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/checkbox";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/panacea/status-badge";
 import { categoryName } from "@/lib/data/categories";
@@ -41,6 +42,9 @@ export function AdminForumModeration({ threads }: { threads: ForumThread[] }) {
       ),
     [threads, overrides],
   );
+
+  const heldPager = usePagination(held.length);
+  const threadsPager = usePagination(threads.length);
 
   async function act(commentId: string, status: CommentStatus) {
     if (status !== "visible" && status !== "hidden" && status !== "removed" && status !== "held") return;
@@ -98,7 +102,7 @@ export function AdminForumModeration({ threads }: { threads: ForumThread[] }) {
         <TabsContent value="held" className="mt-4">
           {held.length > 0 ? (
             <div className="space-y-3">
-              {held.map((comment) => (
+              {held.slice(heldPager.start, heldPager.end).map((comment) => (
                 <article key={comment.id} className="rounded-[22px] border border-rose-100 bg-[#fffdf8] p-4 cozy-shadow">
                   <div className="flex flex-wrap items-center gap-2">
                     <StatusBadge status={comment.status} />
@@ -135,11 +139,16 @@ export function AdminForumModeration({ threads }: { threads: ForumThread[] }) {
               <p className="mt-1 text-xs text-bark-500">{tr("Antrean moderasi bersih.", "The moderation queue is clear.")}</p>
             </div>
           )}
+          <Pagination
+            page={heldPager.page}
+            pageCount={heldPager.pageCount}
+            onPageChange={heldPager.setPage}
+          />
         </TabsContent>
 
         <TabsContent value="threads" className="mt-4">
           <div className="space-y-3">
-            {threads.map((thread) => {
+            {threads.slice(threadsPager.start, threadsPager.end).map((thread) => {
               const isLocked = locked[thread.id] ?? thread.isLocked;
               return (
                 <article key={thread.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
@@ -163,6 +172,11 @@ export function AdminForumModeration({ threads }: { threads: ForumThread[] }) {
               );
             })}
           </div>
+          <Pagination
+            page={threadsPager.page}
+            pageCount={threadsPager.pageCount}
+            onPageChange={threadsPager.setPage}
+          />
         </TabsContent>
       </Tabs>
 

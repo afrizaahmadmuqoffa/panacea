@@ -58,17 +58,20 @@ export function SiteHeader() {
         <Link className="brand" href={`/${locale}#beranda`} aria-label="PANACEA">
           <Logo />
         </Link>
-        <button
-          type="button"
-          className="menu-toggle"
-          aria-label={open ? tr("Tutup menu", "Close menu") : tr("Buka menu", "Open menu")}
-          aria-expanded={open}
-          aria-controls="nav-links"
-          onClick={() => setOpen((value) => !value)}
-        >
-          <span />
-          <span />
-        </button>
+        <div className="nav-mobile-actions">
+          <LocaleSwitcher className="nav-locale" />
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-label={open ? tr("Tutup menu", "Close menu") : tr("Buka menu", "Open menu")}
+            aria-expanded={open}
+            aria-controls="nav-links"
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span />
+            <span />
+          </button>
+        </div>
         <div id="nav-links" className={`nav-links ${open ? "is-open" : ""}`}>
           {links.map((link) => (
             <Link
@@ -81,7 +84,7 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <LocaleSwitcher />
+          <LocaleSwitcher className="nav-locale-menu" />
           <Link href={`/${locale}/masuk`} className="nav-login" onClick={() => setOpen(false)}>
             {tr("Masuk", "Sign in")}
           </Link>

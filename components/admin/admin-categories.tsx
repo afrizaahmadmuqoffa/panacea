@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/label";
 import { PageHeader } from "@/components/ui/page-header";
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import type { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,8 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
   }, [categories, query]);
 
   const hasQuery = query.trim().length > 0;
+  const { page, setPage, pageCount, start, end } = usePagination(visible.length);
+  const pageSlice = visible.slice(start, end);
 
   function openAdd() {
     setEditing(null);
@@ -161,7 +164,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-bark-500" aria-hidden="true" />
-          <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr("Cari kategori...", "Search categories...")} className="pl-11" aria-label={tr("Cari kategori", "Search categories")} />
+          <Input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={tr("Cari kategori...", "Search categories...")} className="pl-11" aria-label={tr("Cari kategori", "Search categories")} />
         </div>
       </div>
 
@@ -186,7 +189,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
                   </TR>
                 </THead>
                 <TBody>
-                  {visible.map((category) => (
+                  {pageSlice.map((category) => (
                     <TR key={category.id}>
                       <TD className="font-bold text-bark-900">{category.name.id}</TD>
                       <TD>{category.name.en}</TD>
@@ -207,7 +210,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
           </div>
 
           <div className="grid gap-3 md:hidden">
-            {visible.map((category) => (
+            {pageSlice.map((category) => (
               <article key={category.id} className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover hover:border-sage-300">
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -226,6 +229,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
               </article>
             ))}
           </div>
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </>
       ) : hasQuery ? (
         <EmptyState
@@ -233,7 +237,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
           state="filtered"
           title={tr("Kategori tidak ditemukan", "No categories found")}
           description={tr("Ubah kata kunci pencarian.", "Change the search keyword.")}
-          action={<Button variant="secondary" onClick={() => setQuery("")}>{tr("Hapus filter", "Clear filters")}</Button>}
+          action={<Button variant="secondary" onClick={() => { setQuery(""); setPage(1); }}>{tr("Hapus filter", "Clear filters")}</Button>}
         />
       ) : (
         <EmptyState
