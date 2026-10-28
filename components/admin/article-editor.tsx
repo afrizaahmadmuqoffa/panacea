@@ -197,13 +197,13 @@ export function ArticleEditor({
                 {tr("Batal", "Cancel")}
               </Button>
               <Button type="button" onClick={saveDraft} disabled={saving}>
-                {saving ? <LoaderCircle className="size-4 spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}
                 {saving ? tr("Menyimpan...", "Saving...") : tr("Simpan artikel", "Save article")}
+                {saving ? <LoaderCircle className="size-4 spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}
               </Button>
               {!onDone ? (
                 <Button type="submit" variant="secondary" disabled={splitting}>
-                  {splitting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Scissors className="size-4" aria-hidden="true" />}
                   {splitting ? tr("Memecah...", "Splitting...") : tr("Pecah Menjadi Chunk", "Split into chunks")}
+                  {splitting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Scissors className="size-4" aria-hidden="true" />}
                 </Button>
               ) : null}
             </div>

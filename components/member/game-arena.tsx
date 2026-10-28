@@ -358,8 +358,8 @@ export function GameArena() {
                     </span>
                   </div>
                   <Button variant="cozy" onClick={() => void next()} fullWidth className="mt-3" disabled={finishing || feedback.pending}>
-                    {finishing ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : finished ? <Trophy className="size-4" aria-hidden="true" /> : <ArrowRight className="size-4" aria-hidden="true" />}
                     {finished ? tr("Lihat hasil sesi", "View session result") : tr("Kartu berikutnya", "Next card")}
+                    {finishing ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : finished ? <Trophy className="size-4" aria-hidden="true" /> : <ArrowRight className="size-4" aria-hidden="true" />}
                   </Button>
                 </>
               )}

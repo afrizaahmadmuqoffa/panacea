@@ -126,9 +126,9 @@ export function DocumentUpload({ categories, onDone }: { categories: Category[];
               {tr("Tinjau chunk", "Review chunks")}
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
-            <Button variant="secondary" onClick={() => { setDone(null); setFile(null); }}>
-              <RefreshCw className="size-4" aria-hidden="true" />
+            <Button type="button" variant="secondary" onClick={() => { setDone(null); setFile(null); }}>
               {tr("Unggah dokumen lain", "Upload another")}
+              <RefreshCw className="size-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -223,8 +223,8 @@ export function DocumentUpload({ categories, onDone }: { categories: Category[];
           ) : null}
 
           <Button type="submit" size="lg" fullWidth className="mt-5" disabled={saving}>
-            {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <FileUp className="size-4" aria-hidden="true" />}
             {saving ? tr("Memproses dokumen...", "Processing document...") : tr("Unggah & Pecah Menjadi Chunk", "Upload & Split into Chunks")}
+            {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <FileUp className="size-4" aria-hidden="true" />}
           </Button>
           {onDone ? null : (
             <p className="mt-2 text-center text-xs leading-relaxed text-bark-500">

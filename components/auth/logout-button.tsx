@@ -34,12 +34,12 @@ function SubmitButton({
       aria-label={iconOnly ? label : undefined}
       className={cn(!iconOnly && "w-full justify-start", buttonClassName)}
     >
+      {iconOnly ? null : pending ? pendingLabel : label}
       {pending ? (
         <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
       ) : (
         <LogOut className="size-4" aria-hidden="true" />
       )}
-      {iconOnly ? null : pending ? pendingLabel : label}
     </Button>
   );
 }

@@ -198,8 +198,8 @@ export function NewThreadForm({ initialClaimId, onDone }: { initialClaimId?: str
           </div>
 
           <Button type="submit" variant="cozy" size="lg" fullWidth className="mt-4" disabled={loading}>
-            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4" aria-hidden="true" />}
             {loading ? tr("Membuat thread...", "Creating thread...") : tr("Buat Thread", "Create Thread")}
+            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="size-4" aria-hidden="true" />}
           </Button>
     </form>
   );

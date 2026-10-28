@@ -18,7 +18,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { LeaderboardEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { MemberHero } from "./member-hero";
-import { Pagination, usePagination } from "@/components/ui/pagination";
 
 export function LeaderboardView({
   weekly,
@@ -80,17 +79,21 @@ export function LeaderboardView({
 
 function LeaderboardBoard({ entries, label }: { entries: LeaderboardEntry[]; label: string }) {
   const { locale, tr } = useI18n();
+
   const top = entries.slice(0, 3);
-  const rest = entries.slice(3);
-  const { page, setPage, pageCount, start, end } = usePagination(rest.length);
-  const pageSlice = rest.slice(start, end);
+  const rest = entries.slice(3, 10);
   const podiumOrder = [top[1], top[0], top[2]].filter(Boolean);
   const heights = ["h-32", "h-44", "h-24"];
   const medals = [Medal, Medal, Medal];
   const hasFullPodium = podiumOrder.length >= 3;
 
+  // User di luar top 10 — tampilkan card posisi terpisah
+  const currentUser = entries.find((e) => e.isCurrentUser);
+  const userBelowTop10 = currentUser && currentUser.rank > 10;
+
   return (
     <div className="space-y-5">
+      {/* Podium top 3 */}
       <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] p-4 cozy-shadow cozy-hover sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs font-extrabold text-bark-500">{label}</p>
@@ -131,57 +134,85 @@ function LeaderboardBoard({ entries, label }: { entries: LeaderboardEntry[]; lab
         </div>
       </div>
 
-      <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover">
-        <div className="flex items-center justify-between border-b border-dashed border-[#e8e2d5] px-4 py-3 sm:px-5">
-          <p className="text-xs font-extrabold text-bark-500">
-            {tr("Peringkat lainnya", "Other rankings")}
-          </p>
-          <span className="text-xs font-semibold text-bark-500">{entries.length} {tr("anggota", "members")}</span>
+      {/* List rank 4–10 + posisi user bila di luar top 10 */}
+      {rest.length > 0 || userBelowTop10 ? (
+        <div className="rounded-[22px] border border-[#eae5d9] bg-[#fffdf8] cozy-shadow cozy-hover">
+          <div className="flex items-center justify-between border-b border-dashed border-[#e8e2d5] px-4 py-3 sm:px-5">
+            <p className="text-xs font-extrabold text-bark-500">
+              {tr("Peringkat lainnya", "Other rankings")}
+            </p>
+            <Badge variant="outline">Top 10</Badge>
+          </div>
+
+          <ul className="divide-y divide-[#e8e2d5]">
+            {rest.map((entry) => (
+              <LeaderboardRow key={entry.alias} entry={entry} locale={locale} tr={tr} />
+            ))}
+          </ul>
+
+          {/* Gap + posisi user di luar top 10 */}
+          {userBelowTop10 ? (
+            <>
+              <div className="flex items-center gap-3 border-t border-dashed border-[#e8e2d5] px-4 py-2 sm:px-5">
+                <span className="w-7 text-center text-xs font-extrabold text-bark-400">···</span>
+                <p className="text-xs text-bark-400">{tr("Posisi kamu", "Your position")}</p>
+              </div>
+              <ul className="border-t border-[#e8e2d5]">
+                <LeaderboardRow entry={currentUser} locale={locale} tr={tr} />
+              </ul>
+            </>
+          ) : null}
         </div>
-        <ul className="divide-y divide-[#e8e2d5]">
-          {pageSlice.map((entry) => (
-            <li
-              key={entry.alias}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 transition sm:px-5",
-                entry.isCurrentUser && "bg-sage-100/60",
-                entry.inactive && "bg-cream-100/60",
-              )}
-            >
-              <span className="w-7 text-center text-xs font-extrabold text-bark-500">#{entry.rank}</span>
-              <Avatar name={entry.alias} size="sm" tone="warm" />
-              <div className="min-w-0 flex-1">
-                <p className="flex items-center gap-1.5 truncate text-xs font-extrabold text-bark-900">
-                  {entry.alias}
-                  {entry.isCurrentUser ? <Badge variant="sage" className="px-1.5 py-0.5 text-xs">{tr("Kamu", "You")}</Badge> : null}
-                </p>
-                <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-bark-500">
-                  <Flame className="size-3" aria-hidden="true" />
-                  {entry.streak} {tr("hari", "days")}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs font-extrabold text-bark-900 [font-variant-numeric:tabular-nums]">
-                  {entry.xp.toLocaleString(locale === "id" ? "id-ID" : "en-GB")}
-                </p>
-                <p className="text-xs font-semibold uppercase tracking-wide text-bark-500">{tr("poin", "points")}</p>
-              </div>
-              <span
-                className={cn(
-                  "grid size-6 place-items-center rounded-full",
-                  entry.trend === "up" && "bg-sage-100 text-sage-700",
-                  entry.trend === "down" && "bg-rose-100 text-rose-700",
-                  entry.trend === "same" && "bg-cream-100 text-bark-500",
-                )}
-                aria-label={entry.trend}
-              >
-                {entry.trend === "up" ? <ArrowUp className="size-3" aria-hidden="true" /> : entry.trend === "down" ? <ArrowDown className="size-3" aria-hidden="true" /> : <Minus className="size-3" aria-hidden="true" />}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
-      </div>
+      ) : null}
     </div>
+  );
+}
+
+function LeaderboardRow({
+  entry,
+  locale,
+  tr,
+}: {
+  entry: LeaderboardEntry;
+  locale: string;
+  tr: (id: string, en: string) => string;
+}) {
+  return (
+    <li
+      className={cn(
+        "flex items-center gap-3 px-4 py-3 transition sm:px-5",
+        entry.isCurrentUser && "bg-sage-100/60",
+      )}
+    >
+      <span className="w-7 text-center text-xs font-extrabold text-bark-500">#{entry.rank}</span>
+      <Avatar name={entry.alias} size="sm" tone="warm" />
+      <div className="min-w-0 flex-1">
+        <p className="flex items-center gap-1.5 truncate text-xs font-extrabold text-bark-900">
+          {entry.alias}
+          {entry.isCurrentUser ? <Badge variant="sage" className="px-1.5 py-0.5 text-xs">{tr("Kamu", "You")}</Badge> : null}
+        </p>
+        <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-bark-500">
+          <Flame className="size-3" aria-hidden="true" />
+          {entry.streak} {tr("hari", "days")}
+        </p>
+      </div>
+      <div className="text-right">
+        <p className="text-xs font-extrabold text-bark-900 [font-variant-numeric:tabular-nums]">
+          {entry.xp.toLocaleString(locale === "id" ? "id-ID" : "en-GB")}
+        </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-bark-500">{tr("poin", "points")}</p>
+      </div>
+      <span
+        className={cn(
+          "grid size-6 place-items-center rounded-full",
+          entry.trend === "up" && "bg-sage-100 text-sage-700",
+          entry.trend === "down" && "bg-rose-100 text-rose-700",
+          entry.trend === "same" && "bg-cream-100 text-bark-500",
+        )}
+        aria-label={entry.trend}
+      >
+        {entry.trend === "up" ? <ArrowUp className="size-3" /> : entry.trend === "down" ? <ArrowDown className="size-3" /> : <Minus className="size-3" />}
+      </span>
+    </li>
   );
 }

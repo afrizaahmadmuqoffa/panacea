@@ -54,8 +54,8 @@ export function ServiceStatus({ initial }: { initial: SystemService[] }) {
           </div>
         </div>
         <Button variant="secondary" size="sm" onClick={run} disabled={pending}>
-          <RefreshCw className={cn("size-4", pending && "animate-spin")} aria-hidden="true" />
           {pending ? tr("Menguji…", "Testing…") : tr("Uji koneksi", "Test connection")}
+          <RefreshCw className={cn("size-4", pending && "animate-spin")} aria-hidden="true" />
         </Button>
       </div>
       <ul className="grid gap-2.5 p-5 sm:grid-cols-3">

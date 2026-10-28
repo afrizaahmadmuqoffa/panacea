@@ -80,8 +80,8 @@ export function SuggestionChunks({ suggestion }: { suggestion?: KBSuggestion }) 
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-bark-700">{suggestion.note}</p>
         </div>
         <Button onClick={saveDraft} disabled={sending}>
-          {sending ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
           {sending ? tr("Menyimpan...", "Saving...") : tr("Simpan draft", "Save draft")}
+          {sending ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
         </Button>
       </div>
 

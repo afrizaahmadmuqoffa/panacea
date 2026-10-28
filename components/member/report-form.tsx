@@ -242,8 +242,8 @@ export function ReportForm({ claimId, onDone }: { claimId: string; onDone?: () =
           </label>
 
           <Button type="submit" variant="cozy" size="lg" fullWidth className="mt-5" disabled={loading || !accepted}>
-            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
             {loading ? tr("Mengirim laporan...", "Sending report...") : tr("Kirim ke Reviewer", "Send to Reviewers")}
+            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
           </Button>
           <p className="mt-2 text-center text-xs leading-relaxed text-bark-500">
             {tr(

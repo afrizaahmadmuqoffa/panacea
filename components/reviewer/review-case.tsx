@@ -434,12 +434,12 @@ export function ReviewCase({
               <p className="text-xs font-extrabold text-bark-900">{tr("Tambah referensi sendiri", "Add your own reference")}</p>
               <div className="ml-auto flex flex-wrap gap-2">
                 <Button type="button" variant="secondary" size="sm" onClick={() => setKbOpen(true)}>
-                  <Library className="size-3.5" aria-hidden="true" />
                   {tr("Ambil dari Knowledge Base", "Pick from knowledge base")}
+                  <Library className="size-3.5" aria-hidden="true" />
                 </Button>
                 <Button type="button" size="sm" onClick={() => { setRefError(""); setRefOpen(true); }}>
-                  <Plus className="size-3.5" aria-hidden="true" />
                   {tr("Tambah referensi", "Add reference")}
+                  <Plus className="size-3.5" aria-hidden="true" />
                 </Button>
               </div>
             </div>
@@ -474,8 +474,8 @@ export function ReviewCase({
               {tr("Batal", "Cancel")}
             </Link>
             <Button type="submit" disabled={!piiPassed || submitting}>
-              {submitting ? <LoaderCircle className="size-4 spin" aria-hidden="true" /> : <FileCheck2 className="size-4" aria-hidden="true" />}
               {submitting ? tr("Memproses...", "Processing...") : tr("Submit Putusan & Terbitkan", "Submit Verdict & Publish")}
+              {submitting ? <LoaderCircle className="size-4 spin" aria-hidden="true" /> : <FileCheck2 className="size-4" aria-hidden="true" />}
             </Button>
           </div>
         </form>
@@ -515,8 +515,8 @@ export function ReviewCase({
               {tr("Batal", "Cancel")}
             </Button>
             <Button type="submit">
-              <Plus className="size-4" aria-hidden="true" />
               {tr("Tambahkan referensi", "Add reference")}
+              <Plus className="size-4" aria-hidden="true" />
             </Button>
           </div>
         </form>
@@ -595,8 +595,8 @@ export function ReviewCase({
               {tr("Periksa lagi", "Review again")}
             </Button>
             <Button onClick={submit} disabled={submitting}>
-              {submitting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <FileCheck2 className="size-4" aria-hidden="true" />}
               {submitting ? tr("Menyimpan...", "Saving...") : tr("Ya, kirim & terbitkan", "Yes, submit & publish")}
+              {submitting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <FileCheck2 className="size-4" aria-hidden="true" />}
             </Button>
           </>
         }

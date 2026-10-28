@@ -125,12 +125,12 @@ export function SourceChunks({ source }: { source?: KBSource }) {
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" onClick={() => void saveChunks()} disabled={saving || chunks.length === 0}>
-            {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
             {tr("Simpan chunk", "Save chunks")}
+            {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
           </Button>
           <Button onClick={() => setConfirmOpen(true)} disabled={!canIngest || status === "ingested"}>
-            <Sparkles className="size-4" aria-hidden="true" />
             {status === "ingested" ? tr("Sudah ter-ingest", "Already ingested") : tr("Setujui & Ingest", "Approve & Ingest")}
+            <Sparkles className="size-4" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -222,8 +222,8 @@ export function SourceChunks({ source }: { source?: KBSource }) {
           <>
             <Button variant="secondary" onClick={() => setConfirmOpen(false)} disabled={ingesting}>{tr("Periksa lagi", "Review again")}</Button>
             <Button onClick={() => void ingest()} disabled={ingesting}>
-              {ingesting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Sparkles className="size-4" aria-hidden="true" />}
               {ingesting ? tr("Meng-ingest...", "Ingesting...") : tr("Ya, setujui & ingest", "Yes, approve & ingest")}
+              {ingesting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Sparkles className="size-4" aria-hidden="true" />}
             </Button>
           </>
         }

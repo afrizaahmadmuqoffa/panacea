@@ -27,8 +27,8 @@ export function NewSuggestionDialog({
   return (
     <>
       <Button type="button" onClick={() => setOpen(true)}>
-        <Plus className="size-4" aria-hidden="true" />
         {children ?? label ?? tr("Ajukan saran", "New suggestion")}
+        <Plus className="size-4" aria-hidden="true" />
       </Button>
       <Dialog
         open={open}

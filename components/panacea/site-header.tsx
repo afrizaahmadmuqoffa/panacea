@@ -45,7 +45,6 @@ export function SiteHeader() {
   }, []);
 
   const links = [
-    { hash: "beranda", label: tr("Beranda", "Home") },
     { hash: "masalah", label: tr("Masalah", "Problem") },
     { hash: "solusi", label: tr("Solusi", "Solution") },
     { hash: "cara-kerja", label: tr("Cara kerja", "How it works") },

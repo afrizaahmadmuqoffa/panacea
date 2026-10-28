@@ -277,8 +277,8 @@ export function NewSuggestionForm({
             {tr("Batal", "Cancel")}
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Scissors className="size-4" aria-hidden="true" />}
             {loading ? tr("Mengirim...", "Sending...") : tr("Kirim & Pecah", "Send & Split")}
+            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Scissors className="size-4" aria-hidden="true" />}
           </Button>
         </div>
       </form>

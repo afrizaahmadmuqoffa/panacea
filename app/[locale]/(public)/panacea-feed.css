@@ -996,19 +996,20 @@
   align-items: center;
   gap: 9px;
   border: 0;
-  background: #f1f5eb;
-  color: var(--sage-700);
-  padding: 10px 14px;
-  border-radius: 12px;
+  background: transparent;
+  color: var(--bark-500);
+  padding: 10px 0;
+  border-radius: 0;
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
   transition:
     transform 0.2s var(--ease-out),
-    background 0.2s ease;
+    color 0.2s ease;
 }
 .panacea-feed .back-link:hover {
-  background: #e3efdc;
+  background: transparent;
+  color: var(--sage-700);
   transform: translateX(-3px);
 }
 .panacea-feed .back-link span {

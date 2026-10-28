@@ -8,8 +8,6 @@ import { clarifyComment } from "@/lib/forum/clarify";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getRuntimeSettings } from "@/lib/settings/runtime";
 
-const BLOCKED_PATTERN = /\b(bodoh|idiot|anjing|bangsat|goblok|stupid|moron)\b/i;
-
 export async function moderateCommentJob(payload: Record<string, unknown>) {
   const admin = getSupabaseAdmin();
   const commentId = String(payload.commentId ?? "");
@@ -24,46 +22,42 @@ export async function moderateCommentJob(payload: Record<string, unknown>) {
   const comment = result.data;
   if (comment.status !== "pending_moderation") return;
 
-  let decision: "visible" | "held" | "removed" = "held";
-  let reasonId =
-    "Moderasi otomatis tidak dapat menyelesaikan penilaian. Komentar ditahan untuk ditinjau admin.";
-  let reasonEn =
-    "Automated moderation could not complete the review. The comment is held for an admin.";
+  // Default ke visible — moderasi hanya menahan yang jelas-jelas melanggar,
+  // bukan menahan semua yang ambigu.
+  let decision: "visible" | "held" | "removed" = "visible";
+  let reasonId = "";
+  let reasonEn = "";
 
   const settings = await getRuntimeSettings();
 
-  if (BLOCKED_PATTERN.test(comment.body)) {
-    decision = "held";
-    reasonId = "Komentar ditahan karena terindikasi serangan personal.";
-    reasonEn = "The comment was held because it appears to contain a personal attack.";
-  } else {
-    try {
-      const gemini = requireGeminiGenerationEnv();
-      const output = await generateJson(moderationSchema, {
-        provider: "gemini",
-        model: gemini.moderationModel,
-        system: moderationSystem,
-        contents: moderationPrompt(redactPii(comment.body)),
-      });
-      decision = output.decision;
-      reasonId = output.reasonId || reasonId;
-      reasonEn = output.reasonEn || reasonEn;
-    } catch {
-      if (settings.forumModerationFailClosed) {
-        decision = "held";
-      } else {
-        // Gagal moderasi tidak selalu berarti Held. Dengan fail-closed dimatikan,
-        // komentar ditunggu di antrean admin, bukan ditahan otomatis.
-        await admin
-          .from("forum_comments")
-          .update({
-            status: "pending_moderation",
-            moderation_note_id: reasonId,
-            moderation_note_en: reasonEn,
-          })
-          .eq("id", commentId);
-        return;
-      }
+  try {
+    const gemini = requireGeminiGenerationEnv();
+    const output = await generateJson(moderationSchema, {
+      provider: "gemini",
+      model: gemini.moderationModel,
+      system: moderationSystem,
+      contents: moderationPrompt(redactPii(comment.body)),
+    });
+    decision = output.decision;
+    reasonId = output.reasonId || reasonId;
+    reasonEn = output.reasonEn || reasonEn;
+  } catch {
+    if (settings.forumModerationFailClosed) {
+      // Fail-closed: tahan saat AI tidak bisa menyelesaikan penilaian.
+      decision = "held";
+      reasonId = "Moderasi otomatis tidak dapat menyelesaikan penilaian. Komentar ditahan untuk ditinjau admin.";
+      reasonEn = "Automated moderation could not complete the review. The comment is held for an admin.";
+    } else {
+      // Fail-open: biarkan komentar menunggu di antrean admin tanpa menahan.
+      await admin
+        .from("forum_comments")
+        .update({
+          status: "pending_moderation",
+          moderation_note_id: "Moderasi otomatis tidak dapat menyelesaikan penilaian. Komentar ditahan untuk ditinjau admin.",
+          moderation_note_en: "Automated moderation could not complete the review. The comment is held for an admin.",
+        })
+        .eq("id", commentId);
+      return;
     }
   }
 
@@ -80,7 +74,7 @@ export async function moderateCommentJob(payload: Record<string, unknown>) {
     comment_id: commentId,
     actor_id: null,
     action: decision,
-    reason: reasonId,
+    reason: reasonId || null,
   });
 
   if (decision === "visible") {

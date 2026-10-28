@@ -280,8 +280,8 @@ export function ThreadDetail({ threadId }: { threadId: string }) {
                       {tr("Batal", "Cancel")}
                     </Button>
                     <Button type="submit" variant="cozy" size="sm" disabled={busy}>
-                      {busy ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
                       {tr("Simpan", "Save")}
+                      {busy ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
                     </Button>
                   </div>
                 </form>
@@ -325,8 +325,8 @@ export function ThreadDetail({ threadId }: { threadId: string }) {
                         {tr("Batal", "Cancel")}
                       </Button>
                       <Button type="submit" variant="cozy" size="sm" disabled={busy}>
-                        {busy ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
                         {tr("Balas", "Reply")}
+                        {busy ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
                       </Button>
                     </div>
                   </div>
@@ -476,8 +476,8 @@ export function ThreadDetail({ threadId }: { threadId: string }) {
                 {body.length}/1000 · {tr("AI moderation aktif", "AI moderation active")}
               </div>
               <Button type="submit" variant="cozy" disabled={moderating}>
-                {moderating ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
                 {moderating ? tr("Memeriksa komentar...", "Checking comment...") : tr("Kirim komentar", "Post comment")}
+                {moderating ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
               </Button>
             </div>
           </form>
@@ -538,8 +538,8 @@ export function ThreadDetail({ threadId }: { threadId: string }) {
           <>
             <Button variant="cozySoft" onClick={() => setDeleteTarget(null)}>{tr("Batal", "Cancel")}</Button>
             <Button variant="destructive" onClick={confirmDelete} disabled={busyId === deleteTarget?.id}>
-              {busyId === deleteTarget?.id ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
               {tr("Hapus", "Delete")}
+              {busyId === deleteTarget?.id ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
             </Button>
           </>
         }

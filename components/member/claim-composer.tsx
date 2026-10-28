@@ -366,8 +366,8 @@ export function ClaimComposer() {
           </div>
 
           <Button type="submit" variant="cozy" size="lg" fullWidth className="mt-4" disabled={loading}>
-            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Sparkles className="size-4" aria-hidden="true" />}
             {loading ? tr("Sedang menganalisis...", "Analysing...") : tr("Analisis Klaim", "Analyse Claim")}
+            {loading ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Sparkles className="size-4" aria-hidden="true" />}
           </Button>
         </form>
 

@@ -112,7 +112,9 @@ export async function analyzeClaimJob(payload: Record<string, unknown>) {
     await admin
       .from("claims")
       .update({
-        original_text: asString(claim.image_path) ? claimText : asString(claim.original_text),
+        // Selalu pakai normalizedClaim hasil AI — teks bersih untuk semua input type.
+        // URL asli sudah tersimpan di source_url, teks mentah artikel tidak perlu ditampilkan.
+        original_text: claimText,
         language: extraction.language,
         category_id: resolvedCategory?.id ?? claim.category_id ?? null,
       })

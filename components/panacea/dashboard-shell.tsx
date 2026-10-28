@@ -16,6 +16,7 @@ import {
   MessagesSquare,
   SearchCheck,
   Settings2,
+  Sparkle,
   Stethoscope,
   Tags,
   Trophy,
@@ -213,7 +214,7 @@ export function DashboardShell({
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-[76px] items-center justify-between border-b border-[#eae5d9] px-6">
+        <div className="flex h-[68px] items-center justify-between border-b border-[#eae5d9] px-6 lg:h-[72px]">
           <Link href={hrefFor(homeHref)} onClick={() => setOpen(false)} aria-label="PANACEA" className="inline-flex min-h-11 items-center">
             <Logo />
           </Link>
@@ -247,12 +248,13 @@ export function DashboardShell({
                       rel={item.newTab ? "noopener noreferrer" : undefined}
                       className={cn(
                         "relative flex min-h-11 items-center gap-2.5 rounded-[12px] px-3 py-2.5 text-[13px] font-bold text-bark-700 transition hover:translate-x-0.5 hover:bg-[#f1f5e9] hover:text-sage-700",
-                        active && "bg-[#e9f1df] font-extrabold text-[#42694d] shadow-[inset_3px_0_#6c9b70]",
+                        active && "bg-sage-600 font-extrabold text-white shadow-none hover:translate-x-0 hover:bg-sage-700 hover:text-white",
                       )}
                       aria-current={active ? "page" : undefined}
                     >
-                      <Icon className={cn("size-[17px]", active ? "text-sage-700" : "text-bark-500")} aria-hidden="true" />
-                      {item.label[locale]}
+                      <Icon className={cn("size-[17px] shrink-0", active ? "text-white" : "text-bark-500")} aria-hidden="true" />
+                      <span className="flex-1">{item.label[locale]}</span>
+                      {active ? <Sparkle className="size-3.5 shrink-0 text-white/70" aria-hidden="true" /> : null}
                     </Link>
                   );
                 })}

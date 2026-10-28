@@ -251,8 +251,8 @@ function ProfileViewInner({
           <div className="mt-5 flex items-center justify-end gap-3 sm:justify-between">
             <p className="hidden text-xs text-bark-500 sm:block">{tr("Perubahan berlaku untuk tampilan publik berikutnya.", "Changes apply to the next public display.")}</p>
             <Button type="submit" variant="cozy" disabled={saving}>
-              {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Check className="size-4" aria-hidden="true" />}
               {saving ? tr("Menyimpan...", "Saving...") : tr("Simpan profil", "Save profile")}
+              {saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Check className="size-4" aria-hidden="true" />}
             </Button>
           </div>
         </form>
@@ -283,8 +283,8 @@ function ProfileViewInner({
             </div>
             <div className="mt-5 flex justify-end">
               <Button type="submit" variant="cozySoft" disabled={changing}>
-                {changing ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <LockKeyhole className="size-4" aria-hidden="true" />}
                 {changing ? tr("Memperbarui...", "Updating...") : tr("Perbarui password", "Update password")}
+                {changing ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <LockKeyhole className="size-4" aria-hidden="true" />}
               </Button>
             </div>
           </form>

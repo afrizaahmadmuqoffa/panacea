@@ -188,8 +188,8 @@ export function ChunkEditor({
         </div>
         {!readOnly ? (
           <Button size="sm" variant="secondary" onClick={addChunk}>
-            <Plus className="size-3.5" aria-hidden="true" />
             {tr("Tambah chunk", "Add chunk")}
+            <Plus className="size-3.5" aria-hidden="true" />
           </Button>
         ) : null}
       </div>
@@ -252,12 +252,12 @@ export function ChunkEditor({
                     <span className="text-xs text-bark-500">{draft.length} {tr("karakter", "characters")} · {estimateTokens(draft)} token</span>
                     <div className="flex gap-2">
                       <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>
-                        <X className="size-3.5" aria-hidden="true" />
                         {tr("Batal", "Cancel")}
+                        <X className="size-3.5" aria-hidden="true" />
                       </Button>
                       <Button size="sm" onClick={() => saveEdit(chunk)}>
-                        <Save className="size-3.5" aria-hidden="true" />
                         {tr("Simpan", "Save")}
+                        <Save className="size-3.5" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>
@@ -271,31 +271,31 @@ export function ChunkEditor({
               {!readOnly ? (
                 <div className="mt-3 flex flex-wrap gap-1.5 border-t border-cream-200 pt-3">
                   <Button size="sm" variant="ghost" onClick={() => startEdit(chunk)}>
-                    <Pencil className="size-3.5" aria-hidden="true" />
                     {tr("Edit", "Edit")}
+                    <Pencil className="size-3.5" aria-hidden="true" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => split(chunk)}>
-                    <Scissors className="size-3.5" aria-hidden="true" />
                     {tr("Pecah", "Split")}
+                    <Scissors className="size-3.5" aria-hidden="true" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => merge(chunk)} disabled={chunk.index === 0}>
-                    <Merge className="size-3.5" aria-hidden="true" />
                     {tr("Gabung atas", "Merge up")}
+                    <Merge className="size-3.5" aria-hidden="true" />
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => setStatus(chunk, chunk.status === "approved" || chunk.status === "ingested" ? "draft" : "approved")}
                   >
-                    <Check className="size-3.5" aria-hidden="true" />
                     {chunk.status === "approved" || chunk.status === "ingested" ? tr("Batalkan setuju", "Unapprove") : tr("Setujui", "Approve")}
+                    <Check className="size-3.5" aria-hidden="true" />
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setStatus(chunk, "rejected")}>
                     {tr("Tolak", "Reject")}
                   </Button>
                   <Button size="sm" variant="ghost" className="ml-auto text-rose-700" onClick={() => remove(chunk)}>
-                    <Trash2 className="size-3.5" aria-hidden="true" />
                     {tr("Hapus", "Delete")}
+                    <Trash2 className="size-3.5" aria-hidden="true" />
                   </Button>
                 </div>
               ) : null}
